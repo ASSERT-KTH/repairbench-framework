@@ -41,12 +41,8 @@ class Defects4JBug(RichBug):
             f"{self.benchmark.get_bin()} checkout -p {self.pid} -v {self.bid}{'f' if fixed else 'b'} -w {path}",
             shell=True,
             capture_output=True,
-            check=False,
+            check=True,
         )
-        if checkout_run.returncode != 0:
-            print(checkout_run.stdout.decode("utf-8"))
-            print(checkout_run.stderr.decode("utf-8"))
-            raise Error("Failed to checkout")
 
         # Convert line endings to unix
         dos2unix_run = subprocess.run(
