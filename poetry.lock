@@ -1316,25 +1316,25 @@ files = [
 
 [[package]]
 name = "mistralai"
-version = "1.2.6"
+version = "1.4.0"
 description = "Python Client SDK for the Mistral AI API."
 optional = false
-python-versions = "<4.0,>=3.8"
+python-versions = ">=3.8"
 files = [
-    {file = "mistralai-1.2.6-py3-none-any.whl", hash = "sha256:d9db22ca3a0e029dc2bf8e9380390168440ae4c19d21d212f53ff0d0bd917447"},
-    {file = "mistralai-1.2.6.tar.gz", hash = "sha256:87a2b6fec565e775b0a027474b02be0c219c0a6b787c193ea1c4d12bac08e52e"},
+    {file = "mistralai-1.4.0-py3-none-any.whl", hash = "sha256:74a8b8f5b737b199c83ccc89721cb82a71e8b093b38b27c99d38cbcdf550668c"},
+    {file = "mistralai-1.4.0.tar.gz", hash = "sha256:b8a09eda1864cba02ebf70439ca1925025e073d3f6f3eeccfdd146ad0f2260fb"},
 ]
 
 [package.dependencies]
-eval-type-backport = ">=0.2.0,<0.3.0"
-httpx = ">=0.27.0,<0.28.0"
-jsonpath-python = ">=1.0.6,<2.0.0"
-pydantic = ">=2.9.0,<3.0.0"
-python-dateutil = ">=2.8.2,<3.0.0"
-typing-inspect = ">=0.9.0,<0.10.0"
+eval-type-backport = ">=0.2.0"
+httpx = ">=0.27.0"
+jsonpath-python = ">=1.0.6"
+pydantic = ">=2.9.0"
+python-dateutil = ">=2.8.2"
+typing-inspect = ">=0.9.0"
 
 [package.extras]
-gcp = ["google-auth (==2.27.0)", "requests (>=2.32.3,<3.0.0)"]
+gcp = ["google-auth (>=2.27.0)", "requests (>=2.32.3)"]
 
 [[package]]
 name = "mpmath"
