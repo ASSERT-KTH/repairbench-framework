@@ -53,9 +53,20 @@ class BugsInPy(Benchmark):
                 capture_output=True,
                 check=True,
             )
-            bugs[project_name] = {
-                int(bug_id.decode("utf-8")) for bug_id in run.stdout.split()
-            }
+            # bugs[project_name] = {
+            #     int(bug_id.decode("utf-8")) for bug_id in run.stdout.split()
+            # }
+
+            bugs[project_name] = set()
+            for bug_id in run.stdout.split():
+                try:
+                    bug_id_int = int(bug_id.decode("utf-8"))
+                    bugs[project_name].add(bug_id_int)
+                except ValueError:
+                    logging.warning(
+                        f"Skipping invalid bug ID: {bug_id.decode('utf-8')}"
+                    )
+
             logging.info(
                 "Found %3d bugs for project %s"
                 % (len(bugs[project_name]), project_name)
@@ -68,7 +79,7 @@ class BugsInPy(Benchmark):
 
             for bug_id in bugs[project_name]:
                 # Extract ground truth diff
-                diff_path = f"benchmarks/BugsInPy/framework/projects/{project_name}/bugs/{bug_id}/bug_patch.txt"
+                diff_path = f"benchmarks/BugsInPy/projects/{project_name}/bugs/{bug_id}/bug_patch.txt"
                 with open(diff_path, "r", encoding="ISO-8859-1") as diff_file:
                     diff = diff_file.read()
 
@@ -76,18 +87,50 @@ class BugsInPy(Benchmark):
                 # failing_test_cases = df[df["bug_id"] == bug_id]["tests"].values[0]
                 # trigger_cause = df[df["bug_id"] == bug_id]["errors"].values[0]
 
-                # Check with default path
-                fail_path = f"/temp/projects/{project_name}/bugsinpy_fail.txt"
-                with open(fail_path, "r", encoding="ISO-8859-1") as fail_file:
-                    failing_tests_content = fail_file.read()
+                # Moved into BugsInPybug.py
+                # # Checkout the bug
+                # checkout_run = subprocess.run(
+                #     f"{self.benchmark.get_bin()}bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id}",
+                #     shell=True,
+                #     capture_output=True,
+                #     check=True,
+                # )
 
-                # Use a regular expression to extract the test name and its context
-                pattern = r"FAIL: ([\w_.]+ \([\w_.]+\))"
-                matches = re.findall(pattern, failing_tests_content)
+                # # Compile and test the bug
+                # path = f"{self.benchmark.get_bin()}/temp/{project_name}"
+                # checkout_compile = subprocess.run(
+                #     f"{self.benchmark.get_bin()}bugsinpy-compile -w {path}",
+                #     shell=True,
+                #     capture_output=True,
+                #     check=True,
+                # )
 
-                # Store the results in a dictionary if needed
-                failing_tests = {"failing_tests": matches}
+                # checkout_compile = subprocess.run(
+                #     f"{self.benchmark.get_bin()}bugsinpy-test -w {path}",
+                #     shell=True,
+                #     capture_output=True,
+                #     check=True,
+                # )
+
+                # # Check with default path
+                # fail_path = f"{self.benchmark.get_bin()}/temp/{project_name}/bugsinpy_fail.txt"
+                # with open(fail_path, "r", encoding="ISO-8859-1") as fail_file:
+                #     failing_tests_content = fail_file.read()
+
+                # # Use a regular expression to extract the test name and its context
+                # pattern = r"FAIL: ([\w_.]+ \([\w_.]+\))"
+                # matches = re.findall(pattern, failing_tests_content)
+
+                # # Store the results in a dictionary if needed
+                # failing_tests = {"failing_tests": matches}
 
                 self.add_bug(
-                    BugsInPyBug(self, project_name, bug_id, diff, failing_tests)
+                    BugsInPyBug(
+                        self,
+                        project_name=project_name,
+                        bug_id=bug_id,
+                        version_id=0,  # 0 buggy -- is this always the case?
+                        ground_truth=diff,
+                        failing_tests=None,  # needs to be checked out for this?
+                    )
                 )
