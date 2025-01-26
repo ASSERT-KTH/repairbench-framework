@@ -6,12 +6,12 @@ import os
 from elleelleaime.core.benchmarks.benchmark import Benchmark
 
 # TODO: Implement as `RichBug` later on
-from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.core.benchmarks.bug import RichBug
 from elleelleaime.core.benchmarks.test_result import TestResult
 from elleelleaime.core.benchmarks.compile_result import CompileResult
 
 
-class BugsInPyBug(Bug):
+class BugsInPyBug(RichBug):
     """
     The class for representing BugsInPy bugs
     """
@@ -21,7 +21,7 @@ class BugsInPyBug(Bug):
         benchmark: Benchmark,
         project_name: str,
         bug_id: str,
-        version_id: str,
+        version_id: str,  # 1 fixed, 0 buggy
         ground_truth: str,
         failing_tests: dict[str, str],
     ) -> None:
@@ -30,10 +30,10 @@ class BugsInPyBug(Bug):
         self.version_id = version_id
         super().__init__(
             benchmark,
-            f"{project_name}-{bug_id}-{version_id}",
+            f"{project_name}-{bug_id}",
             ground_truth,
             failing_tests,
-            ground_truth_inverted=True,
+            # ground_truth_inverted=True, # TODO: TypeError: Bug.__init__() got multiple values for argument 'ground_truth_inverted'
         )
 
     def checkout(self, path: str, fixed: bool = False) -> bool:
@@ -42,7 +42,7 @@ class BugsInPyBug(Bug):
 
         # Checkout the bug
         checkout_run = subprocess.run(
-            f"{self.benchmark.get_bin()}bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id} -w {path}",
+            f"{self.benchmark.get_bin()}/bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id}",
             shell=True,
             capture_output=True,
             check=True,
@@ -60,17 +60,18 @@ class BugsInPyBug(Bug):
 
     def compile(self, path: str) -> CompileResult:
         run = subprocess.run(
-            f"cd {path} && timeout {5*60} {self.benchmark.get_bin()}bugsinpy-compile",
+            f"{self.benchmark.get_bin()}/bugsinpy-compile -w {self.benchmark.get_bin()}/temp/{self.project_name}",
             shell=True,
             capture_output=True,
             check=True,
         )
+
         return CompileResult(run.returncode == 0, run.stdout, run.stderr)
 
     def test(self, path: str) -> TestResult:
         # First run only relevant tests
         run = subprocess.run(
-            f"cd {path} && timeout {30*60} {self.benchmark.get_bin()}bugsinpy-test",
+            f"{self.benchmark.get_bin()}/bugsinpy-test -w {self.benchmark.get_bin()}/temp/{self.project_name}",
             shell=True,
             capture_output=True,
             check=False,
@@ -83,13 +84,7 @@ class BugsInPyBug(Bug):
             return TestResult(False)
         return TestResult(run.returncode == 0 and m != None and int(m.group(1)) == 0)
 
-    # TODO: Implement later
-    # def get_src_test_dir(self, path: str) -> str:
-    #     run = subprocess.run(
-    #         f"cd {path} && {self.benchmark.get_bin()} export -p dir.src.tests",
-    #         shell=True,
-    #         capture_output=True,
-    #         check=True,
-    #     )
+    def get_src_test_dir(self, path: str) -> str:
+        path = f"{self.benchmark.get_bin()}/temp/{self.project_name}/test"
 
-    #     return run.stdout.decode("utf-8").strip()
+        return path
