@@ -37,12 +37,18 @@ class BugsInPyBug(RichBug):
         )
 
     def checkout(self, path: str, fixed: bool = False) -> bool:
+
+        print(f"path: {path}")
+        project_name, bug_id = path.rsplit("-", 1)
+        print(f"project_name: {project_name}, bug_id: {bug_id}")
+
         # Remove the directory if it exists
         shutil.rmtree(path, ignore_errors=True)
 
         # Checkout the bug
         checkout_run = subprocess.run(
-            f"{self.benchmark.get_bin()}/bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id}",
+            f"{self.benchmark.get_bin()}/bugsinpy-checkout -p {project_name} -v {fixed} -i {bug_id}",  # 1 fixed, 0 buggy
+            # f"{self.benchmark.get_bin()}/bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id}",
             shell=True,
             capture_output=True,
             check=True,
@@ -59,32 +65,54 @@ class BugsInPyBug(RichBug):
         return checkout_run.returncode == 0 and dos2unix_run.returncode == 0
 
     def compile(self, path: str) -> CompileResult:
+        project_name, bug_id = path.rsplit("-", 1)
+
         run = subprocess.run(
-            f"{self.benchmark.get_bin()}/bugsinpy-compile -w {self.benchmark.get_bin()}/temp/{self.project_name}",
+            f"{self.benchmark.get_bin()}/bugsinpy-compile -w {self.benchmark.get_bin()}/temp/{project_name}",
             shell=True,
             capture_output=True,
             check=True,
         )
 
-        return CompileResult(run.returncode == 0, run.stdout, run.stderr)
+        return CompileResult(run.returncode == 0)
 
     def test(self, path: str) -> TestResult:
-        # First run only relevant tests
+        project_name, bug_id = path.rsplit("-", 1)
+
+        # # First run only relevant tests
+        # run = subprocess.run(
+        #     f"{self.benchmark.get_bin()}/bugsinpy-test -w {self.benchmark.get_bin()}/temp/{project_name}",
+        #     shell=True,
+        #     capture_output=True,
+        #     check=False,
+        # )
+
+        # pattern = r"FAIL: ([\w_.]+ \([\w_.]+\))"
+        # m = re.search(pattern, run.stdout.decode("utf-8"))
+        # # m = re.findall(pattern, run.stdout.decode("utf-8"))
+
+        # if not (run.returncode == 0 and m != None and int(m.group(1)) == 0):
+        #     return TestResult(False)
+        # return TestResult(run.returncode == 0 and m != None and int(m.group(1)) == 0)
+
         run = subprocess.run(
-            f"{self.benchmark.get_bin()}/bugsinpy-test -w {self.benchmark.get_bin()}/temp/{self.project_name}",
+            f"{self.benchmark.get_bin()}/bugsinpy-test -w {self.benchmark.get_bin()}/temp/{project_name}",
             shell=True,
             capture_output=True,
             check=False,
         )
+        # m = re.search(r"Failing tests: ([0-9]+)", run.stdout.decode("utf-8"))
+        # return TestResult(run.returncode == 0 and m != None and int(m.group(1)) == 0)
 
-        pattern = r"FAIL: ([\w_.]+ \([\w_.]+\))"
-        m = re.findall(pattern, run.stdout.decode("utf-8"))
+        # Decode the output and extract the last line
+        stdout_lines = run.stdout.decode("utf-8").strip().splitlines()
+        last_line = stdout_lines[-1] if stdout_lines else ""
 
-        if not (run.returncode == 0 and m != None and int(m.group(1)) == 0):
-            return TestResult(False)
-        return TestResult(run.returncode == 0 and m != None and int(m.group(1)) == 0)
+        success = run.returncode == 0 and "FAILED" not in last_line
+        return TestResult(success)
 
     def get_src_test_dir(self, path: str) -> str:
-        path = f"{self.benchmark.get_bin()}/temp/{self.project_name}/test"
+        project_name, bug_id = path.rsplit("-", 1)
+        path = f"{self.benchmark.get_bin()}/temp/{project_name}/test"
 
         return path
