@@ -90,7 +90,7 @@ class BugsInPyBug(RichBug):
             success = True
         elif "FAILED" in last_line:
             success = False
-        
+
         return TestResult(success)
 
     def get_src_test_dir(self, path: str) -> str:

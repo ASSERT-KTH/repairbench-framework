@@ -117,7 +117,7 @@ class TestBugsInPy:
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             for bug in bugs[:3]:  # Only run the first 3 bugs
-                assert (self.run_bug(bug)), f"Failed run for {bug.get_identifier()}"
+                assert self.run_bug(bug), f"Failed run for {bug.get_identifier()}"
 
     @pytest.mark.skip(reason="This test is too slow to run on CI.")
     def test_run_all_bugs(self):
