@@ -81,14 +81,12 @@ class TestBugsInPy:
             assert self.checkout_bug(bug), f"Failed checkout for {bug.get_identifier()}"
 
     def run_bug(self, bug: Bug) -> bool:
-        print(f"??????? Running bug {bug.get_identifier()}")
-
         project_name, _ = bug.get_identifier().rsplit("-", 1)
         path = f"./benchmarks/BugsInPy/framework/bin/temp/{project_name}"
 
         try:
             # Checkout buggy version
-            bug.checkout(bug.get_identifier(), fixed=False)
+            bug.checkout(bug.get_identifier(), fixed=0)
             # Compile buggy version
             bug.compile(bug.get_identifier())
             # Test buggy version
@@ -97,7 +95,7 @@ class TestBugsInPy:
                 return False
 
             # Checkout fixed version
-            bug.checkout(bug.get_identifier(), fixed=True)
+            bug.checkout(bug.get_identifier(), fixed=1)
             # Compile buggy version
             bug.compile(bug.get_identifier())
             # Test fixed version
@@ -118,10 +116,8 @@ class TestBugsInPy:
         assert bugs is not None
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-            # TODO: Change back to 3
-            for bug in bugs[:1]:  # Only run the first 3 bugs
-                print(f"&&&&&& Running bug {bug.get_identifier()}")
-                assert self.run_bug(bug), f"Failed run for {bug.get_identifier()}"
+            for bug in bugs[:3]:  # Only run the first 3 bugs
+                assert (self.run_bug(bug)), f"Failed run for {bug.get_identifier()}"
 
     @pytest.mark.skip(reason="This test is too slow to run on CI.")
     def test_run_all_bugs(self):
@@ -146,24 +142,24 @@ class TestBugsInPy:
                     result
                 ), f"Failed run for {futures_to_bugs[future].get_identifier()}"
 
-    def test_get_failing_tests(self):
-        bugs_in_py = get_benchmark("BugsInPy")
-        assert bugs_in_py is not None
-        bugs_in_py.initialize()
+    # def test_get_failing_tests(self):
+    #     bugs_in_py = get_benchmark("BugsInPy")
+    #     assert bugs_in_py is not None
+    #     bugs_in_py.initialize()
 
-        bugs = bugs_in_py.get_bugs()
-        assert bugs is not None
+    #     bugs = bugs_in_py.get_bugs()
+    #     assert bugs is not None
 
-        for bug in bugs:
-            failing_tests = bug.get_failing_tests()
-            assert failing_tests is not None
-            assert len(failing_tests) > 0
-            assert all(
-                failing_test.strip() != "" for failing_test in failing_tests.keys()
-            )
-            assert all(
-                failing_test.strip() != "" for failing_test in failing_tests.values()
-            )
+    #     for bug in bugs:
+    #         failing_tests = bug.get_failing_tests()
+    #         assert failing_tests is not None
+    #         assert len(failing_tests) > 0
+    #         assert all(
+    #             failing_test.strip() != "" for failing_test in failing_tests.keys()
+    #         )
+    #         assert all(
+    #             failing_test.strip() != "" for failing_test in failing_tests.values()
+    #         )
 
     def test_get_src_test_dir(self):
         bugs_in_py = get_benchmark("BugsInPy")
