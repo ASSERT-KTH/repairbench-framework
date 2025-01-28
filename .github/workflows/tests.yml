@@ -9,7 +9,7 @@ jobs:
 
       - uses: jlumbroso/free-disk-space@v1.3.1
 
-      - uses: actions/setup-python@v5.3.0
+      - uses: actions/setup-python@v5.4.0
         with:
           python-version: '3.13'
 
