@@ -20,6 +20,9 @@ from elleelleaime.generate.strategies.models.anthropic.anthropic import (
 from elleelleaime.generate.strategies.models.mistral.mistral import (
     MistralModels,
 )
+from elleelleaime.generate.strategies.models.huggingface.deepseek.deepseek_fim import (
+    DeepSeekFIM,
+)
 
 from typing import Tuple
 
