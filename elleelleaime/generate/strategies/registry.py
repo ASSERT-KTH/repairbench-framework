@@ -42,6 +42,7 @@ class PatchGenerationStrategyRegistry:
         "codellama-instruct": (CodeLLaMAIntruct, ("model_name",)),
         "anthropic": (AnthropicModels, ("model_name", "max_tokens")),
         "mistral": (MistralModels, ("model_name",)),
+        "deepseek-fim": (DeepSeekFIM, ("model_name",)),
     }
 
     @classmethod
