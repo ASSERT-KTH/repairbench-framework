@@ -22,6 +22,13 @@ class InfillingPrompting(PromptingStrategy):
             "single_chunk": True,
         },
         # Add the model you want to use here
+        "deepseek": {
+            "mask_token": "<｜fim▁hole｜>",
+            "extra_mask_token": False,
+            "single_chunk": True,
+            "begin_fim": "<｜fim▁begin｜>",
+            "end_fim": "<｜fim▁end｜>",
+        },
     }
 
     def __init__(self, **kwargs):
@@ -33,7 +40,10 @@ class InfillingPrompting(PromptingStrategy):
         ), f"Unknown model name: {kwargs.get('model_name', None)}"
         model_kwargs = self.MODEL_DICT.get(self.model_name, {})
         self.original_mask_token: str = model_kwargs["mask_token"]
+        self.begin_fim: str = model_kwargs.get("begin_fim", None)
+        self.end_fim: str = model_kwargs.get("end_fim", None)
         self.extra_mask_token: bool = model_kwargs.get("extra_mask_token", False)
+        self.single_chunk: bool = model_kwargs.get("single_chunk", True)
         self.keep_buggy_code: bool = kwargs.get("keep_buggy_code", False)
         self.keep_comments: bool = kwargs.get("keep_comments", True)
 
@@ -168,12 +178,17 @@ class InfillingPrompting(PromptingStrategy):
         buggy_code_prompt = remove_empty_lines(buggy_code_prompt)
         fixed_code_prompt = remove_empty_lines(fixed_code_prompt)
 
-        if self.MODEL_DICT[self.model_name]["single_chunk"]:
+        if self.single_chunk:
             prompt = self.build_single_cloze_prompt(
                 buggy_code_prompt, fixed_code_prompt
             )
         else:
             prompt = self.build_multi_cloze_prompt(buggy_code_prompt, fixed_code_prompt)
+
+        if self.begin_fim:
+            prompt = f"{self.begin_fim}{prompt}"
+        if self.end_fim:
+            prompt = f"{prompt}{self.end_fim}"
 
         return buggy_code, fixed_code, prompt
 
