@@ -1,8 +1,9 @@
+import logging
 from typing import Optional
-from .cost_strategy import CostStrategy
 
 import tqdm
-import logging
+
+from .cost_strategy import CostStrategy
 
 
 class OpenRouterCostStrategy(CostStrategy):

@@ -1,21 +1,21 @@
-import os
-import pytest
-import shutil
 import getpass
+import os
+import shutil
 import tempfile
-
-from unidiff import PatchSet
 from pathlib import Path
 from uuid import uuid4
 
+import pytest
+from unidiff import PatchSet
+
+from elleelleaime.core.benchmarks.benchmark import Benchmark
+from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.core.utils.benchmarks import get_benchmark
 from elleelleaime.core.utils.java.java import (
     extract_single_function,
     get_source_filename,
     get_target_filename,
 )
-from elleelleaime.core.utils.benchmarks import get_benchmark
-from elleelleaime.core.benchmarks.benchmark import Benchmark
-from elleelleaime.core.benchmarks.bug import Bug
 
 
 class TestExtractSingleFunction:

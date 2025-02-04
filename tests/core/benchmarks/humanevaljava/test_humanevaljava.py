@@ -1,13 +1,15 @@
-from elleelleaime.core.utils.benchmarks import get_benchmark
-from elleelleaime.core.benchmarks.bug import Bug
-
-from pathlib import Path
-import uuid
-import shutil
-import tqdm
-import pytest
-import getpass, tempfile
 import concurrent.futures
+import getpass
+import shutil
+import tempfile
+import uuid
+from pathlib import Path
+
+import pytest
+import tqdm
+
+from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.core.utils.benchmarks import get_benchmark
 
 
 class TestHumanEvalJava:

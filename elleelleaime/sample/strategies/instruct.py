@@ -1,12 +1,13 @@
 from typing import Optional, Tuple
+
 from unidiff import PatchSet
 
-from elleelleaime.sample.strategy import PromptingStrategy
 from elleelleaime.core.benchmarks.bug import RichBug
 from elleelleaime.core.utils.java.java import (
-    extract_single_function,
     extract_failing_test_cases,
+    extract_single_function,
 )
+from elleelleaime.sample.strategy import PromptingStrategy
 
 
 class InstructPrompting(PromptingStrategy):

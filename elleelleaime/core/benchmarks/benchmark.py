@@ -8,8 +8,8 @@ class Benchmark(ABC):
 
 
 import pathlib
-
 from typing import Dict, List, Optional
+
 from elleelleaime.core.benchmarks.bug import Bug
 
 

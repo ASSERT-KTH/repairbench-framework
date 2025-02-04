@@ -1,7 +1,7 @@
-from elleelleaime.evaluate.strategies.text.instruct import InstructEvaluationStrategy
-from elleelleaime.core.benchmarks.bug import Bug
+from typing import List, Optional
 
-from typing import Optional, List
+from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.evaluate.strategies.text.instruct import InstructEvaluationStrategy
 
 
 class MistralEvaluationStrategy(InstructEvaluationStrategy):

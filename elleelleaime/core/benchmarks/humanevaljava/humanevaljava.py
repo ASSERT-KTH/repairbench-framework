@@ -1,10 +1,11 @@
+import logging
+import subprocess
 from pathlib import Path
+
 from unidiff import PatchSet
+
 from elleelleaime.core.benchmarks.benchmark import Benchmark
 from elleelleaime.core.benchmarks.humanevaljava.humanevaljavabug import HumanEvalJavaBug
-
-import subprocess
-import logging
 
 
 class HumanEvalJava(Benchmark):

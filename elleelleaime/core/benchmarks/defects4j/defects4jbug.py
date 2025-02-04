@@ -1,12 +1,12 @@
-import subprocess
-import shutil
-import re
 import os
+import re
+import shutil
+import subprocess
 
 from elleelleaime.core.benchmarks.benchmark import Benchmark
 from elleelleaime.core.benchmarks.bug import RichBug
-from elleelleaime.core.benchmarks.test_result import TestResult
 from elleelleaime.core.benchmarks.compile_result import CompileResult
+from elleelleaime.core.benchmarks.test_result import TestResult
 
 
 class Defects4JBug(RichBug):

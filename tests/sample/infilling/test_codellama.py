@@ -1,9 +1,10 @@
-from generate_samples import generate_sample
-from elleelleaime.core.utils.benchmarks import get_benchmark
-from elleelleaime.core.benchmarks.benchmark import Benchmark
+import os
 
 import pytest
-import os
+
+from elleelleaime.core.benchmarks.benchmark import Benchmark
+from elleelleaime.core.utils.benchmarks import get_benchmark
+from generate_samples import generate_sample
 
 
 class TestInfillingCodellama:

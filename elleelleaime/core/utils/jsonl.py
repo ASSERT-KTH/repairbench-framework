@@ -1,7 +1,7 @@
-from typing import Iterable, Dict
 import gzip
 import json
 import os
+from typing import Dict, Iterable
 
 """
 Code from HumanEval:

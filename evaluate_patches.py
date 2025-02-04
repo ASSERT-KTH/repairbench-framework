@@ -1,18 +1,18 @@
+import json
+import logging
+import os
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from elleelleaime.core.utils.benchmarks import get_benchmark
-from elleelleaime.core.benchmarks.bug import Bug
-from elleelleaime.core.utils.jsonl import stream_jsonl, write_jsonl
-from elleelleaime.evaluate.strategies.registry import PatchEvaluationStrategyRegistry
-
 from pathlib import Path
 
-import numpy as np
 import fire
-import sys
+import numpy as np
 import tqdm
-import logging
-import json
-import os
+
+from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.core.utils.benchmarks import get_benchmark
+from elleelleaime.core.utils.jsonl import stream_jsonl, write_jsonl
+from elleelleaime.evaluate.strategies.registry import PatchEvaluationStrategyRegistry
 
 
 def evaluate_candidate(bug: Bug, sample: dict, strategy: str, **kwargs) -> dict:

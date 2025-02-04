@@ -1,14 +1,15 @@
+import logging
+import os
+import subprocess
+from io import StringIO
 from pathlib import Path
 from typing import Optional
-from io import StringIO
+
+import pandas as pd
+import tqdm
+
 from elleelleaime.core.benchmarks.benchmark import Benchmark
 from elleelleaime.core.benchmarks.defects4j.defects4jbug import Defects4JBug
-
-import subprocess
-import logging
-import tqdm
-import os
-import pandas as pd
 
 
 class Defects4J(Benchmark):

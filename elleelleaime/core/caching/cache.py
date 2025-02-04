@@ -1,12 +1,11 @@
-import json
 import hashlib
+import json
 import logging
-
 from pathlib import Path
 from typing import Optional
 
-from elleelleaime.core.utils.benchmarks import get_benchmark
 from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.core.utils.benchmarks import get_benchmark
 
 
 class Cache:

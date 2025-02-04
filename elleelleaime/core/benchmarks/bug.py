@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 from elleelleaime.core.benchmarks.benchmark import Benchmark
-from elleelleaime.core.benchmarks.test_result import TestResult
 from elleelleaime.core.benchmarks.compile_result import CompileResult
+from elleelleaime.core.benchmarks.test_result import TestResult
 
 
 class Bug(ABC):

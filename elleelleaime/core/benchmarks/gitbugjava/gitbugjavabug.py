@@ -1,13 +1,14 @@
-import subprocess
-import backoff
-import shutil
-import re
 import os
-from elleelleaime.core.benchmarks.benchmark import Benchmark
+import re
+import shutil
+import subprocess
 
+import backoff
+
+from elleelleaime.core.benchmarks.benchmark import Benchmark
 from elleelleaime.core.benchmarks.bug import RichBug
-from elleelleaime.core.benchmarks.test_result import TestResult
 from elleelleaime.core.benchmarks.compile_result import CompileResult
+from elleelleaime.core.benchmarks.test_result import TestResult
 
 
 class GitBugJavaBug(RichBug):

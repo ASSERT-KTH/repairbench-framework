@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-
-from typing import List, Any, final
+from typing import Any, List, final
 
 
 class PatchGenerationStrategy(ABC):

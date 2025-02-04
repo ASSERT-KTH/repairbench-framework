@@ -1,15 +1,16 @@
+import logging
+import sys
+import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from elleelleaime.core.utils.benchmarks import get_benchmark
-from elleelleaime.core.utils.jsonl import write_jsonl
-from elleelleaime.core.benchmarks.bug import Bug
 from typing import Optional, Union
-from elleelleaime.sample.registry import PromptStrategyRegistry
 
 import fire
-import traceback
-import sys
 import tqdm
-import logging
+
+from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.core.utils.benchmarks import get_benchmark
+from elleelleaime.core.utils.jsonl import write_jsonl
+from elleelleaime.sample.registry import PromptStrategyRegistry
 
 
 def generate_sample(

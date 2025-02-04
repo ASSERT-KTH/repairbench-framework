@@ -1,8 +1,9 @@
-from .replace import ReplaceEvaluationStrategy
+import re
+from typing import List, Optional
+
 from elleelleaime.core.benchmarks.bug import Bug
 
-from typing import Optional, List
-import re
+from .replace import ReplaceEvaluationStrategy
 
 
 class InstructEvaluationStrategy(ReplaceEvaluationStrategy):

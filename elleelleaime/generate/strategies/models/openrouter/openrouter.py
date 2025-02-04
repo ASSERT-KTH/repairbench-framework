@@ -1,13 +1,13 @@
-import requests.exceptions
-from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
-
-from dotenv import load_dotenv
+import json
+import os
 from typing import Any, List
 
-import os
-import requests
-import json
 import backoff
+import requests
+import requests.exceptions
+from dotenv import load_dotenv
+
+from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
 
 class OpenRouterModels(PatchGenerationStrategy):

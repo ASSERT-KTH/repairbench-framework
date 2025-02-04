@@ -1,15 +1,16 @@
-from typing import Optional, Tuple
-from unidiff import PatchSet
 import re
+from typing import Optional, Tuple
 
-from elleelleaime.sample.strategy import PromptingStrategy
+from unidiff import PatchSet
+
 from elleelleaime.core.benchmarks.bug import Bug
 from elleelleaime.core.utils.java.java import (
-    extract_single_function,
     compute_diff,
-    remove_java_comments,
+    extract_single_function,
     remove_empty_lines,
+    remove_java_comments,
 )
+from elleelleaime.sample.strategy import PromptingStrategy
 
 
 class InfillingPrompting(PromptingStrategy):

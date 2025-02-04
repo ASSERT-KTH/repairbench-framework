@@ -1,17 +1,16 @@
-import google.api_core
-import google.api_core.exceptions
-from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
-
-from dotenv import load_dotenv
+import os
 from typing import Any, List
 
-import os
-import tqdm
-import google.generativeai as genai
-import google
 import backoff
-
+import google
 import google.api
+import google.api_core
+import google.api_core.exceptions
+import google.generativeai as genai
+import tqdm
+from dotenv import load_dotenv
+
+from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
 
 class GoogleModels(PatchGenerationStrategy):

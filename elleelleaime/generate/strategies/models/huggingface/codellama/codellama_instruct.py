@@ -1,12 +1,13 @@
-from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
+import logging
 from dataclasses import dataclass
-from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer
 from typing import Any, List
 
-import tqdm
 import torch
-import logging
+import tqdm
+from peft import PeftModel
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
 
 @dataclass

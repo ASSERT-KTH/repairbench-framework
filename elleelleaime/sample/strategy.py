@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from elleelleaime.core.benchmarks.bug import Bug
-
 from typing import Optional, Union
+
+from elleelleaime.core.benchmarks.bug import Bug
 
 
 class PromptingStrategy(ABC):

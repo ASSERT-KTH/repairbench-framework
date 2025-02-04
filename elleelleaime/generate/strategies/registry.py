@@ -1,30 +1,24 @@
-from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
-from elleelleaime.generate.strategies.models.openai.openai import (
-    OpenAIChatCompletionModels,
-)
-from elleelleaime.generate.strategies.models.google.google import (
-    GoogleModels,
-)
+from typing import Tuple
+
+from elleelleaime.generate.strategies.models.anthropic.anthropic import AnthropicModels
+from elleelleaime.generate.strategies.models.google.google import GoogleModels
 from elleelleaime.generate.strategies.models.huggingface.codellama.codellama_infilling import (
     CodeLLaMAInfilling,
 )
 from elleelleaime.generate.strategies.models.huggingface.codellama.codellama_instruct import (
     CodeLLaMAIntruct,
 )
-from elleelleaime.generate.strategies.models.openrouter.openrouter import (
-    OpenRouterModels,
-)
-from elleelleaime.generate.strategies.models.anthropic.anthropic import (
-    AnthropicModels,
-)
-from elleelleaime.generate.strategies.models.mistral.mistral import (
-    MistralModels,
-)
 from elleelleaime.generate.strategies.models.huggingface.deepseek.deepseek_fim import (
     DeepSeekFIM,
 )
-
-from typing import Tuple
+from elleelleaime.generate.strategies.models.mistral.mistral import MistralModels
+from elleelleaime.generate.strategies.models.openai.openai import (
+    OpenAIChatCompletionModels,
+)
+from elleelleaime.generate.strategies.models.openrouter.openrouter import (
+    OpenRouterModels,
+)
+from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
 
 class PatchGenerationStrategyRegistry:

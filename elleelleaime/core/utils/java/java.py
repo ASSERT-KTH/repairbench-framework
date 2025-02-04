@@ -1,11 +1,15 @@
-from typing import Optional, Tuple, List
-from unidiff import PatchSet
-from uuid import uuid4
-from pathlib import Path
+import difflib
+import getpass
 import logging
-import getpass, tempfile, difflib, shutil
-import subprocess
 import re
+import shutil
+import subprocess
+import tempfile
+from pathlib import Path
+from typing import List, Optional, Tuple
+from uuid import uuid4
+
+from unidiff import PatchSet
 
 from elleelleaime.core.benchmarks.bug import Bug, RichBug
 

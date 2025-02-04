@@ -1,14 +1,14 @@
+import logging
+import os
+import re
+import subprocess
 from pathlib import Path
-from elleelleaime.core.benchmarks.benchmark import Benchmark
-from elleelleaime.core.benchmarks.gitbugjava.gitbugjavabug import GitBugJavaBug
-
 from typing import Optional
 
-import subprocess
-import logging
 import tqdm
-import re
-import os
+
+from elleelleaime.core.benchmarks.benchmark import Benchmark
+from elleelleaime.core.benchmarks.gitbugjava.gitbugjavabug import GitBugJavaBug
 
 
 class GitBugJava(Benchmark):

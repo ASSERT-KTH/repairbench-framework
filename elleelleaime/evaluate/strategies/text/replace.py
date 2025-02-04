@@ -1,14 +1,18 @@
-from typing import Optional, List
-from unidiff import PatchSet
+import getpass
+import logging
+import os
+import shutil
+import tempfile
 from pathlib import Path
+from typing import List, Optional
 from uuid import uuid4
 
-import os, tempfile, shutil, logging, getpass
+from unidiff import PatchSet
 
-from elleelleaime.evaluate.strategies.strategy import PatchEvaluationStrategy
 from elleelleaime.core.benchmarks.bug import Bug
-from elleelleaime.core.utils.java.java import remove_empty_lines, remove_java_comments
 from elleelleaime.core.caching.cache import Cache
+from elleelleaime.core.utils.java.java import remove_empty_lines, remove_java_comments
+from elleelleaime.evaluate.strategies.strategy import PatchEvaluationStrategy
 
 
 class ReplaceEvaluationStrategy(PatchEvaluationStrategy):

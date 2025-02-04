@@ -1,6 +1,6 @@
-from .strategy import PromptingStrategy
 from .strategies.infilling import InfillingPrompting
 from .strategies.instruct import InstructPrompting
+from .strategy import PromptingStrategy
 
 
 class PromptStrategyRegistry:

@@ -1,10 +1,11 @@
+import logging
+import subprocess
 from pathlib import Path
+
 from unidiff import PatchSet
+
 from elleelleaime.core.benchmarks.benchmark import Benchmark
 from elleelleaime.core.benchmarks.quixbugs.quixbugsbug import QuixBugsBug
-
-import subprocess
-import logging
 
 
 class QuixBugs(Benchmark):

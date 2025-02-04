@@ -1,15 +1,15 @@
-from elleelleaime.evaluate.strategies.strategy import PatchEvaluationStrategy
-from elleelleaime.evaluate.strategies.text.replace import ReplaceEvaluationStrategy
-from elleelleaime.evaluate.strategies.text.instruct import InstructEvaluationStrategy
-from elleelleaime.evaluate.strategies.openai.openai import OpenAIEvaluationStrategy
-from elleelleaime.evaluate.strategies.google.google import GoogleEvaluationStrategy
-from elleelleaime.evaluate.strategies.openrouter.openrouter import (
-    OpenRouterEvaluationStrategy,
-)
 from elleelleaime.evaluate.strategies.anthropic.anthropic import (
     AnthropicEvaluationStrategy,
 )
+from elleelleaime.evaluate.strategies.google.google import GoogleEvaluationStrategy
 from elleelleaime.evaluate.strategies.mistral.mistral import MistralEvaluationStrategy
+from elleelleaime.evaluate.strategies.openai.openai import OpenAIEvaluationStrategy
+from elleelleaime.evaluate.strategies.openrouter.openrouter import (
+    OpenRouterEvaluationStrategy,
+)
+from elleelleaime.evaluate.strategies.strategy import PatchEvaluationStrategy
+from elleelleaime.evaluate.strategies.text.instruct import InstructEvaluationStrategy
+from elleelleaime.evaluate.strategies.text.replace import ReplaceEvaluationStrategy
 
 
 class PatchEvaluationStrategyRegistry:

@@ -1,7 +1,8 @@
 from typing import Optional
-from .cost_strategy import CostStrategy
 
 import tqdm
+
+from .cost_strategy import CostStrategy
 
 
 class MistralCostStrategy(CostStrategy):

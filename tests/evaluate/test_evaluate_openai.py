@@ -1,7 +1,7 @@
+from elleelleaime.core.benchmarks.benchmark import Benchmark
+from elleelleaime.core.utils.benchmarks import get_benchmark
 from evaluate_patches import evaluate_candidate
 from generate_samples import generate_sample
-from elleelleaime.core.utils.benchmarks import get_benchmark
-from elleelleaime.core.benchmarks.benchmark import Benchmark
 
 
 class TestEvaluatePatchesOpenAIDefects4J:

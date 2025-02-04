@@ -1,13 +1,14 @@
-from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
+import logging
+import threading
 from dataclasses import dataclass
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from typing import Any, List, Optional
 
-import tqdm
 import torch
-import threading
-import logging
+import tqdm
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers.tokenization_utils_base import PreTrainedTokenizerBase
+
+from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
 
 @dataclass

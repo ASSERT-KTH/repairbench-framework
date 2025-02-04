@@ -1,14 +1,15 @@
+import logging
+import os
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+from typing import List, Optional
+
+import fire
+import tqdm
+
 from elleelleaime.core.utils.jsonl import stream_jsonl, write_jsonl
 from elleelleaime.generate.strategies.registry import PatchGenerationStrategyRegistry
-
-from typing import List, Optional
-from pathlib import Path
-import fire
-import sys
-import os
-import tqdm
-import logging
 
 
 def generate_candidate(chunk: List[dict], strategy_name: str, **kwargs) -> List[dict]:

@@ -1,19 +1,19 @@
 import os
 import shutil
 import tempfile
-
-from unidiff import PatchSet
 from pathlib import Path
 from uuid import uuid4
 
+from unidiff import PatchSet
+
+from elleelleaime.core.benchmarks.benchmark import Benchmark
+from elleelleaime.core.benchmarks.bug import RichBug
+from elleelleaime.core.utils.benchmarks import get_benchmark
 from elleelleaime.core.utils.java.java import (
     extract_failing_test_cases,
     get_source_filename,
     get_target_filename,
 )
-from elleelleaime.core.utils.benchmarks import get_benchmark
-from elleelleaime.core.benchmarks.benchmark import Benchmark
-from elleelleaime.core.benchmarks.bug import RichBug
 
 
 class TestExtractFailingTestCases:

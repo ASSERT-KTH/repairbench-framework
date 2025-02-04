@@ -1,11 +1,11 @@
-from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
-
-from dotenv import load_dotenv
+import os
 from typing import Any, List
 
-import os
-import openai
 import backoff
+import openai
+from dotenv import load_dotenv
+
+from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
 
 class OpenAIChatCompletionModels(PatchGenerationStrategy):

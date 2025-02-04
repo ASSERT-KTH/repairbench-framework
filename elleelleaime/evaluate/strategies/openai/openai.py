@@ -1,7 +1,8 @@
-from ..text.instruct import InstructEvaluationStrategy
+from typing import List, Optional
+
 from elleelleaime.core.benchmarks.bug import Bug
 
-from typing import Optional, List
+from ..text.instruct import InstructEvaluationStrategy
 
 
 class OpenAIEvaluationStrategy(InstructEvaluationStrategy):

@@ -1,10 +1,10 @@
-import subprocess
 import shutil
-from elleelleaime.core.benchmarks.benchmark import Benchmark
+import subprocess
 
+from elleelleaime.core.benchmarks.benchmark import Benchmark
 from elleelleaime.core.benchmarks.bug import Bug
-from elleelleaime.core.benchmarks.test_result import TestResult
 from elleelleaime.core.benchmarks.compile_result import CompileResult
+from elleelleaime.core.benchmarks.test_result import TestResult
 
 
 class QuixBugsBug(Bug):
