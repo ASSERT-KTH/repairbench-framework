@@ -1,6 +1,69 @@
 import pytest
 from elleelleaime.export.token.token_calculator import TokenCalculator
 
+# Token cost rates per million tokens for different providers
+PROVIDER_RATES = {
+    "openai-chatcompletion": {
+        "prompt": 2.5,
+        "completion": 10.0,
+        "model": "gpt-4o-2024-08-06",
+    },
+    "mistral": {"prompt": 2.0, "completion": 6.0, "model": "mistral-large-2411"},
+    "google": {"prompt": 0.1, "completion": 0.4, "model": "gemini-2.0-flash-001"},
+    "openrouter": {
+        "prompt": 2.8,
+        "completion": 2.8,
+        "model": "meta-llama:llama-3.1-405b-instruct",
+    },
+    "anthropic": {
+        "prompt": 0.25,
+        "completion": 1.25,
+        "model": "claude-3-haiku-20240307",
+    },
+}
+
+
+def calculate_expected_cost(tokens: int, rate: float) -> float:
+    return tokens * rate / 1_000_000
+
+
+@pytest.fixture
+def sample_factory():
+    def _create_sample(provider: str, prompt_tokens: int, completion_tokens: int):
+        if provider == "google":
+            return {
+                "generation": [
+                    {
+                        "usage_metadata": {
+                            "prompt_token_count": prompt_tokens,
+                            "candidates_token_count": completion_tokens,
+                        }
+                    }
+                ]
+            }
+        elif provider == "anthropic":
+            return {
+                "generation": [
+                    {
+                        "usage": {
+                            "input_tokens": prompt_tokens,
+                            "output_tokens": completion_tokens,
+                        }
+                    }
+                ]
+            }
+        else:
+            return {
+                "generation": {
+                    "usage": {
+                        "prompt_tokens": prompt_tokens,
+                        "completion_tokens": completion_tokens,
+                    }
+                }
+            }
+
+    return _create_sample
+
 
 def test_compute_usage_with_invalid_provider():
     samples = [
@@ -10,104 +73,26 @@ def test_compute_usage_with_invalid_provider():
     assert result is None
 
 
-def test_compute_usage_with_openai():
-    samples = [
-        {"generation": [{"usage": {"prompt_tokens": 10, "completion_tokens": 20}}]}
-    ]
-    result = TokenCalculator.compute_usage(
-        samples, "openai-chatcompletion", "gpt-4o-2024-08-06"
+@pytest.mark.parametrize("provider", PROVIDER_RATES.keys())
+def test_compute_usage(provider, sample_factory):
+    prompt_tokens = 15
+    completion_tokens = 25
+
+    samples = [sample_factory(provider, prompt_tokens, completion_tokens)]
+    rates = PROVIDER_RATES[provider]
+
+    result = TokenCalculator.compute_usage(samples, provider, rates["model"])
+
+    assert result is not None
+    assert result["prompt_tokens"] == prompt_tokens
+    assert result["completion_tokens"] == completion_tokens
+    assert result["total_tokens"] == prompt_tokens + completion_tokens
+
+    expected_prompt_cost = calculate_expected_cost(prompt_tokens, rates["prompt"])
+    expected_completion_cost = calculate_expected_cost(
+        completion_tokens, rates["completion"]
     )
-    assert result is not None
-    assert result["prompt_tokens"] == 10
-    assert result["completion_tokens"] == 20
-    assert result["total_tokens"] == 30
-    assert (
-        result["prompt_cost"] == 10 * 2.5 / 1_000_000
-    )  # Based on OpenAI's cost per million tokens
-    assert (
-        result["completion_cost"] == 20 * 10 / 1_000_000
-    )  # Based on OpenAI's cost per million tokens
-    assert result["total_cost"] == result["prompt_cost"] + result["completion_cost"]
 
-
-def test_compute_usage_with_mistral():
-    samples = [
-        {"generation": {"usage": {"prompt_tokens": 15, "completion_tokens": 25}}}
-    ]
-    result = TokenCalculator.compute_usage(samples, "mistral", "mistral-large-2411")
-    assert result is not None
-    assert result["prompt_tokens"] == 15
-    assert result["completion_tokens"] == 25
-    assert result["total_tokens"] == 40
-    assert (
-        result["prompt_cost"] == 15 * 2 / 1_000_000
-    )  # Based on Mistral's cost per million tokens
-    assert (
-        result["completion_cost"] == 25 * 6 / 1_000_000
-    )  # Based on Mistral's cost per million tokens
-    assert result["total_cost"] == result["prompt_cost"] + result["completion_cost"]
-
-
-def test_compute_usage_with_google():
-    samples = [
-        {
-            "generation": [
-                {
-                    "usage_metadata": {
-                        "prompt_token_count": 30,
-                        "candidates_token_count": 40,
-                    }
-                }
-            ]
-        }
-    ]
-    result = TokenCalculator.compute_usage(samples, "google", "gemini-2.0-flash-001")
-    assert result is not None
-    assert result["prompt_tokens"] == 30
-    assert result["completion_tokens"] == 40
-    assert result["total_tokens"] == 70
-    assert (
-        result["prompt_cost"] == 30 * 0.125 / 1_000_000
-    )  # Based on Google's cost per million tokens
-    assert (
-        result["completion_cost"] == 40 * 0.375 / 1_000_000
-    )  # Based on Google's cost per million tokens
-    assert result["total_cost"] == result["prompt_cost"] + result["completion_cost"]
-
-
-def test_compute_usage_with_openrouter():
-    samples = [
-        {"generation": [{"usage": {"prompt_tokens": 20, "completion_tokens": 30}}]}
-    ]
-    result = TokenCalculator.compute_usage(
-        samples, "openrouter", "claude-3-haiku-20240307"
-    )
-    assert result is not None
-    assert result["prompt_tokens"] == 20
-    assert result["completion_tokens"] == 30
-    assert result["total_tokens"] == 50
-    assert (
-        result["prompt_cost"] == 20 * 0.25 / 1_000_000
-    )  # Based on OpenRouter's cost per million tokens
-    assert (
-        result["completion_cost"] == 30 * 1.25 / 1_000_000
-    )  # Based on OpenRouter's cost per million tokens
-    assert result["total_cost"] == result["prompt_cost"] + result["completion_cost"]
-
-
-def test_compute_usage_with_anthropic():
-    samples = [{"generation": [{"usage": {"input_tokens": 25, "output_tokens": 35}}]}]
-    result = TokenCalculator.compute_usage(
-        samples, "anthropic", "claude-3-haiku-20240307"
-    )
-    assert result is not None
-    assert result["prompt_tokens"] == 25
-    assert result["completion_tokens"] == 35
-    assert result["total_tokens"] == 60
-    assert (
-        result["prompt_cost"] == 25 * 0.25 / 1_000_000
-    )  # Based on Anthropic's cost per million tokens
-    assert (
-        result["completion_cost"] == 35 * 1.25 / 1_000_000
-    )  # Based on Anthropic's cost per million tokens
-    assert result["total_cost"] == result["prompt_cost"] + result["completion_cost"]
+    assert result["prompt_cost"] == expected_prompt_cost
+    assert result["completion_cost"] == expected_completion_cost
+    assert result["total_cost"] == expected_prompt_cost + expected_completion_cost
