@@ -1,10 +1,10 @@
 from typing import Optional
-from .cost_strategy import CostStrategy
+from .cost_strategy import TokenStrategy
 
 import tqdm
 
 
-class GoogleCostStrategy(CostStrategy):
+class GoogleTokenStrategy(TokenStrategy):
 
     __COST_PER_MILLION_TOKENS = {
         "gemini-1.5-pro-001": {
@@ -33,17 +33,20 @@ class GoogleCostStrategy(CostStrategy):
     }
 
     @staticmethod
-    def compute_costs(samples: list, model_name: str) -> Optional[dict]:
-        if model_name not in GoogleCostStrategy.__COST_PER_MILLION_TOKENS:
+    def compute_usage(samples: list, model_name: str) -> Optional[dict]:
+        if model_name not in GoogleTokenStrategy.__COST_PER_MILLION_TOKENS:
             return None
 
-        costs = {
+        usage = {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
             "prompt_cost": 0.0,
             "completion_cost": 0.0,
             "total_cost": 0.0,
         }
 
-        for sample in tqdm.tqdm(samples, f"Computing costs for {model_name}..."):
+        for sample in tqdm.tqdm(samples, f"Computing token usage for {model_name}..."):
             if sample["generation"]:
                 for generation in sample["generation"]:
                     if "usage_metadata" not in generation:
@@ -52,36 +55,44 @@ class GoogleCostStrategy(CostStrategy):
                     prompt_token_count = generation["usage_metadata"][
                         "prompt_token_count"
                     ]
-                    candidates_token_count = generation["usage_metadata"][
+                    completion_token_count = generation["usage_metadata"][
                         "candidates_token_count"
                     ]
+
+                    # Update token counts
+                    usage["prompt_tokens"] += prompt_token_count
+                    usage["completion_tokens"] += completion_token_count
+
+                    # Determine cost rates based on token count
                     if (
                         prompt_token_count > 128000
                         and model_name
-                        in GoogleCostStrategy.__COST_PER_MILLION_TOKENS_OVER_128K
+                        in GoogleTokenStrategy.__COST_PER_MILLION_TOKENS_OVER_128K
                     ):
                         prompt_cost = (
-                            GoogleCostStrategy.__COST_PER_MILLION_TOKENS_OVER_128K[
+                            GoogleTokenStrategy.__COST_PER_MILLION_TOKENS_OVER_128K[
                                 model_name
                             ]["prompt"]
                         )
                         completion_cost = (
-                            GoogleCostStrategy.__COST_PER_MILLION_TOKENS_OVER_128K[
+                            GoogleTokenStrategy.__COST_PER_MILLION_TOKENS_OVER_128K[
                                 model_name
                             ]["completion"]
                         )
                     else:
-                        prompt_cost = GoogleCostStrategy.__COST_PER_MILLION_TOKENS[
+                        prompt_cost = GoogleTokenStrategy.__COST_PER_MILLION_TOKENS[
                             model_name
                         ]["prompt"]
-                        completion_cost = GoogleCostStrategy.__COST_PER_MILLION_TOKENS[
+                        completion_cost = GoogleTokenStrategy.__COST_PER_MILLION_TOKENS[
                             model_name
                         ]["completion"]
 
-                    costs["prompt_cost"] += prompt_cost * prompt_token_count / 1000000
-                    costs["completion_cost"] += (
-                        completion_cost * candidates_token_count / 1000000
+                    # Calculate costs
+                    usage["prompt_cost"] += prompt_cost * prompt_token_count / 1000000
+                    usage["completion_cost"] += (
+                        completion_cost * completion_token_count / 1000000
                     )
 
-        costs["total_cost"] = costs["prompt_cost"] + costs["completion_cost"]
-        return costs
+        usage["total_tokens"] = usage["prompt_tokens"] + usage["completion_tokens"]
+        usage["total_cost"] = usage["prompt_cost"] + usage["completion_cost"]
+        return usage
