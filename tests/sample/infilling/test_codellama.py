@@ -53,10 +53,6 @@ class TestInfillingCodellama:
     PROMPT_STRATEGY_PYTHON: str = "infilling_python"
 
 
-    
-
-
-
     @classmethod
     def setup_class(cls):
         # TestInfillingCodellama.DEFECTS4J = get_benchmark("defects4j")
@@ -86,15 +82,17 @@ class TestInfillingCodellama:
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
-        print(f"\n\n{sample=}\n\n")
-
         # Assert we are dealing with the correct bug and strategy
         assert sample["identifier"] == "youtube-dl-1"
-        assert sample["prompt_strategy"] == "infilling"
+        assert sample["prompt_strategy"] == "infilling_python"
 
-        # Assert that the buggy code and fixed code are properly separated
-        assert "public JSType getLeastSupertype(JSType that) {" in sample["buggy_code"]
-        assert sample["fixed_code"] == ""
+        # Assert that the buggy code is properly constructed
+        assert "'': lambda v: v is not None," in sample["buggy_code"]
+        assert "'!': lambda v: v is None," in sample["buggy_code"]
+        
+        # Assert that the fixed code is properly constructed
+        assert "'': lambda v: (v is True) if isinstance(v, bool) else (v is not None)," in sample["fixed_code"]
+        assert "'!': lambda v: (v is False) if isinstance(v, bool) else (v is None)," in sample["fixed_code"]
 
         # Assert that the prompt is properly constructed
         assert sample["prompt"].count("<FILL_ME>") == 1
