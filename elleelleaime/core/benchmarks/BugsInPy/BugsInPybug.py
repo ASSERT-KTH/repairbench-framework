@@ -36,7 +36,7 @@ class BugsInPyBug(RichBug):
             # ground_truth_inverted=True, # TODO: TypeError: Bug.__init__() got multiple values for argument 'ground_truth_inverted'
         )
 
-    def checkout(self, path: str, fixed: bool = False) -> bool:
+    def checkout(self, path: str, fixed: bool = 0) -> bool:
         project_name, bug_id = path.rsplit("-", 1)
 
         # Remove the directory if it exists
