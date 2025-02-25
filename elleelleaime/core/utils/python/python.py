@@ -139,7 +139,6 @@ def get_modified_target_lines(diff: PatchSet) -> List[int]:
     return added_lines if len(added_lines) > 0 else context_lines
 
 
-# TODO
 def extract_single_function(bug: Bug) -> Optional[Tuple[str, str]]:
     """
     Extracts the buggy and fixed code of single-function bugs.
