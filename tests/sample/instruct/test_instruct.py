@@ -15,7 +15,7 @@ class TestInstructPromptingBugsInPy:
         TestInstructPromptingBugsInPy.BUGSINPY = get_benchmark("BugsInPy")
         assert TestInstructPromptingBugsInPy.BUGSINPY is not None
         TestInstructPromptingBugsInPy.BUGSINPY.initialize()
-    
+
     def test_youtube_dl_1(cls):
         bug = TestInstructPromptingBugsInPy.BUGSINPY.get_bug("youtube-dl-1")
         assert bug is not None
@@ -39,7 +39,6 @@ class TestInstructPromptingBugsInPy:
         # print(sample["fixed_code"])
         # print("prompt:")
         # print(sample["prompt"])
-
 
 
 # class TestInstructPromptingDefects4J:

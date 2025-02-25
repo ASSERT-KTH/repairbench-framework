@@ -52,17 +52,16 @@ class TestInfillingCodellama:
     BUGSINPY: Benchmark
     PROMPT_STRATEGY_PYTHON: str = "infilling_python"
 
-
     @classmethod
     def setup_class(cls):
         # TestInfillingCodellama.DEFECTS4J = get_benchmark("defects4j")
         # assert TestInfillingCodellama.DEFECTS4J is not None
         # TestInfillingCodellama.DEFECTS4J.initialize()
-        
+
         # TestInfillingCodellama.HUMANEVALJAVA = get_benchmark("humanevaljava")
         # assert TestInfillingCodellama.HUMANEVALJAVA is not None
         # TestInfillingCodellama.HUMANEVALJAVA.initialize()
-        
+
         # TestInfillingCodellama.GITBUGJAVA = get_benchmark("gitbugjava")
         # assert TestInfillingCodellama.GITBUGJAVA is not None
         # TestInfillingCodellama.GITBUGJAVA.initialize()
@@ -70,7 +69,6 @@ class TestInfillingCodellama:
         TestInfillingCodellama.BUGSINPY = get_benchmark("BugsInPy")
         assert TestInfillingCodellama.BUGSINPY is not None
         TestInfillingCodellama.BUGSINPY.initialize()
-
 
     def test_youtube_dl_1(self):
         bug = TestInfillingCodellama.BUGSINPY.get_bug("youtube-dl-1")
@@ -89,10 +87,16 @@ class TestInfillingCodellama:
         # Assert that the buggy code is properly constructed
         assert "'': lambda v: v is not None," in sample["buggy_code"]
         assert "'!': lambda v: v is None," in sample["buggy_code"]
-        
+
         # Assert that the fixed code is properly constructed
-        assert "'': lambda v: (v is True) if isinstance(v, bool) else (v is not None)," in sample["fixed_code"]
-        assert "'!': lambda v: (v is False) if isinstance(v, bool) else (v is None)," in sample["fixed_code"]
+        assert (
+            "'': lambda v: (v is True) if isinstance(v, bool) else (v is not None),"
+            in sample["fixed_code"]
+        )
+        assert (
+            "'!': lambda v: (v is False) if isinstance(v, bool) else (v is None),"
+            in sample["fixed_code"]
+        )
 
         # Assert that the prompt is properly constructed
         assert sample["prompt"].count("<FILL_ME>") == 1
