@@ -4,12 +4,10 @@ import re
 
 from elleelleaime.sample.strategy import PromptingStrategy
 from elleelleaime.core.benchmarks.bug import Bug
-from elleelleaime.core.utils.java.java import (
-    extract_single_function,
-    compute_diff,
-    remove_java_comments,
-    remove_empty_lines,
-)
+
+from elleelleaime.core.utils.language_utils import LanguageUtils
+from elleelleaime.core.utils.languages.python_utils import PythonUtils
+from elleelleaime.core.utils.languages.java_utils import JavaUtils
 
 
 class InfillingPrompting(PromptingStrategy):
@@ -37,6 +35,9 @@ class InfillingPrompting(PromptingStrategy):
         self.keep_buggy_code: bool = kwargs.get("keep_buggy_code", False)
         self.keep_comments: bool = kwargs.get("keep_comments", True)
 
+        language: str = kwargs.get("language", "").strip().lower()
+        self.language_utils = LanguageUtils.get_language_utils(language)
+
     def generate_masking_prompt(self, line_to_replace: str, mask_id: int) -> str:
         """Generate the mask token to be inserted, according to the mask idx."""
         # Generate the mask token
@@ -57,7 +58,7 @@ class InfillingPrompting(PromptingStrategy):
         return leading_spaces + mask_token
 
     def build_multi_cloze_prompt(self, buggy_code: str, fixed_code: str) -> str:
-        fdiff = compute_diff(buggy_code, fixed_code)
+        fdiff = self.language_utils.compute_diff(buggy_code, fixed_code)
 
         # Iterate over both the buggy and fixed code to generate the prompt
         prompt = ""
@@ -102,7 +103,7 @@ class InfillingPrompting(PromptingStrategy):
         return prompt
 
     def build_single_cloze_prompt(self, buggy_code: str, fixed_code: str) -> str:
-        fdiff = compute_diff(buggy_code, fixed_code)
+        fdiff = self.language_utils.compute_diff(buggy_code, fixed_code)
 
         # Iterate over the diff to get the prefix, middle, and suffix parts
         prefix = [True, ""]
@@ -151,7 +152,7 @@ class InfillingPrompting(PromptingStrategy):
         Returns:
             Tuple: A tuple of the form (buggy_code, fixed_code, prompt).
         """
-        result = extract_single_function(bug)
+        result = self.language_utils.extract_single_function(bug)
 
         if result is None:
             return None, None, None
@@ -159,14 +160,14 @@ class InfillingPrompting(PromptingStrategy):
         buggy_code, fixed_code = result
 
         if not self.keep_comments:
-            buggy_code_prompt = remove_java_comments(buggy_code)
-            fixed_code_prompt = remove_java_comments(fixed_code)
+            buggy_code_prompt = self.language_utils.remove_java_comments(buggy_code)
+            fixed_code_prompt = self.language_utils.remove_java_comments(fixed_code)
         else:
             buggy_code_prompt = buggy_code
             fixed_code_prompt = fixed_code
 
-        buggy_code_prompt = remove_empty_lines(buggy_code_prompt)
-        fixed_code_prompt = remove_empty_lines(fixed_code_prompt)
+        buggy_code_prompt = self.language_utils.remove_empty_lines(buggy_code_prompt)
+        fixed_code_prompt = self.language_utils.remove_empty_lines(fixed_code_prompt)
 
         if self.MODEL_DICT[self.model_name]["single_chunk"]:
             prompt = self.build_single_cloze_prompt(

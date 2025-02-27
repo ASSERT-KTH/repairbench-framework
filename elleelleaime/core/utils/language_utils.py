@@ -33,11 +33,11 @@ class LanguageUtils(ABC):
     def get_language_utils(language: str):
         """Returns an instance of the appropriate subclass based on the language."""
         if language == "python":
-            from elleelleaime.core.utils.python import PythonUtils
+            from elleelleaime.core.utils.languages.python_utils import PythonUtils
 
             return PythonUtils()
         elif language == "java":
-            from elleelleaime.core.utils.java import JavaUtils
+            from elleelleaime.core.utils.languages.java_utils import JavaUtils
 
             return JavaUtils()
         else:

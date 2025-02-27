@@ -15,7 +15,7 @@ class PythonUtils(LanguageUtils):
     def get_language(self) -> str:
         return "python"
 
-    def extract_single_function(bug: Bug) -> Optional[Tuple[str, str]]:
+    def extract_single_function(self, bug: Bug) -> Optional[Tuple[str, str]]:
         """
         Extracts the buggy and fixed code of single-function bugs.
         Returns None is bug is not single-function
@@ -119,10 +119,10 @@ class PythonUtils(LanguageUtils):
             shutil.rmtree(buggy_path, ignore_errors=True)
             shutil.rmtree(fixed_path, ignore_errors=True)
 
-    def extract_failing_test_cases(bug: RichBug) -> dict[str, str]:
+    def extract_failing_test_cases(self, bug: RichBug) -> dict[str, str]:
         pass
 
-    def remove_comments(source: str):
+    def remove_comments(self, source: str):
         try:
             NORMAL, SINGLE_COMMENT, MULTI_COMMENT, STRING_LITERAL = range(4)
             state = NORMAL

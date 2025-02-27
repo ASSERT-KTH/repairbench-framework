@@ -15,7 +15,7 @@ class JavaUtils(LanguageUtils):
     def get_language(self) -> str:
         return "java"
 
-    def extract_single_function(bug: Bug) -> Optional[Tuple[str, str]]:
+    def extract_single_function(self, bug: Bug) -> Optional[Tuple[str, str]]:
         """
         Extracts the buggy and fixed code of single-function bugs.
         Returns None is bug is not single-function
@@ -114,7 +114,7 @@ class JavaUtils(LanguageUtils):
             shutil.rmtree(buggy_path, ignore_errors=True)
             shutil.rmtree(fixed_path, ignore_errors=True)
 
-    def extract_failing_test_cases(bug: RichBug) -> dict[str, str]:
+    def extract_failing_test_cases(self, bug: RichBug) -> dict[str, str]:
         """
         Extracts the code of the failing test cases of a bug.
 
@@ -158,7 +158,7 @@ class JavaUtils(LanguageUtils):
 
         return failing_test_cases
 
-    def remove_comments(source: str):
+    def remove_comments(self, source: str):
         try:
             # Define states
             NORMAL, SINGLE_COMMENT, MULTI_COMMENT, STRING_LITERAL, CHAR_LITERAL = range(
