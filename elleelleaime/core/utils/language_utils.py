@@ -29,6 +29,20 @@ class LanguageUtils(ABC):
     def remove_comments(self, source: str):
         pass
 
+    @staticmethod
+    def get_language_utils(language: str):
+        """Returns an instance of the appropriate subclass based on the language."""
+        if language == "python":
+            from elleelleaime.core.utils.python import PythonUtils
+
+            return PythonUtils()
+        elif language == "java":
+            from elleelleaime.core.utils.java import JavaUtils
+
+            return JavaUtils()
+        else:
+            raise ValueError(f"Unsupported language: '{language}'.")
+
     def compute_diff(
         self, buggy_code: str, fixed_code: str, context_len: Optional[int] = None
     ) -> List[str]:
