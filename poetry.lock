@@ -1936,23 +1936,14 @@ files = [
 
 [[package]]
 name = "openai"
-<<<<<<< HEAD
 version = "1.65.5"
-=======
-version = "1.65.3"
->>>>>>> b395933 (upgrade torch)
 description = "The official Python library for the openai API"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-<<<<<<< HEAD
     {file = "openai-1.65.5-py3-none-any.whl", hash = "sha256:5948a504e7b4003d921cfab81273813793a31c25b1d7b605797c01757e0141f1"},
     {file = "openai-1.65.5.tar.gz", hash = "sha256:17d39096bbcaf6c86580244b493a59e16613460147f0ba5ab6e608cdb6628149"},
-=======
-    {file = "openai-1.65.3-py3-none-any.whl", hash = "sha256:a155fa5d60eccda516384d3d60d923e083909cc126f383fe4a350f79185c232a"},
-    {file = "openai-1.65.3.tar.gz", hash = "sha256:9b7cd8f79140d03d77f4ed8aeec6009be5dcd79bbc02f03b0e8cd83356004f71"},
->>>>>>> b395933 (upgrade torch)
 ]
 
 [package.dependencies]
@@ -2082,19 +2073,17 @@ files = [
 
 [[package]]
 name = "peft"
-version = "0.14.0"
+version = "0.14.1.dev0"
 description = "Parameter-Efficient Fine-Tuning (PEFT)"
 optional = false
 python-versions = ">=3.9.0"
 groups = ["main"]
-files = [
-    {file = "peft-0.14.0-py3-none-any.whl", hash = "sha256:2f04f3a870c3baf30f15e7dcaa5dd70d3e54cfdd146d3c6c187735d3ae0a0700"},
-    {file = "peft-0.14.0.tar.gz", hash = "sha256:546d69af7b42f5ef715a3d3261ed818bc917ae6055e5d7e187ed3f2c76ad72dc"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 accelerate = ">=0.21.0"
-huggingface-hub = ">=0.25.0"
+huggingface_hub = ">=0.25.0"
 numpy = ">=1.17"
 packaging = ">=20.0"
 psutil = "*"
@@ -2105,10 +2094,16 @@ tqdm = "*"
 transformers = "*"
 
 [package.extras]
-dev = ["black", "hf-doc-builder", "ruff (>=0.6.1,<0.7.0)"]
+dev = ["black", "black", "hf-doc-builder", "hf-doc-builder", "ruff (>=0.9.2,<0.10.0)"]
 docs-specific = ["black", "hf-doc-builder"]
-quality = ["black", "hf-doc-builder", "ruff (>=0.6.1,<0.7.0)"]
-test = ["black", "datasets", "diffusers", "hf-doc-builder", "parameterized", "protobuf", "pytest", "pytest-cov", "pytest-xdist", "ruff (>=0.6.1,<0.7.0)", "scipy", "sentencepiece"]
+quality = ["black", "hf-doc-builder", "ruff (>=0.9.2,<0.10.0)"]
+test = ["black", "black", "datasets", "diffusers", "hf-doc-builder", "hf-doc-builder", "parameterized", "protobuf", "pytest", "pytest-cov", "pytest-xdist", "ruff (>=0.9.2,<0.10.0)", "scipy", "sentencepiece"]
+
+[package.source]
+type = "git"
+url = "https://github.com/huggingface/peft"
+reference = "HEAD"
+resolved_reference = "8edaae9460e4b76bce9431dc187402178ff7b689"
 
 [[package]]
 name = "platformdirs"
@@ -3597,4 +3592,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "bd6c8a796d61027a92324630e99eeb64047f83b02b37d132813fcf3533fad8bf"
+content-hash = "4b32baf21033eaeaca9904b433ae63865971d421053a0515b2960ca64cf57cdf"
