@@ -1358,13 +1358,13 @@ files = [
 
 [[package]]
 name = "mistralai"
-version = "1.5.0"
+version = "1.5.1"
 description = "Python Client SDK for the Mistral AI API."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mistralai-1.5.0-py3-none-any.whl", hash = "sha256:9372537719f87bd6f9feef4747d0bf1f4fbe971f8c02945ca4b4bf3c94571c97"},
-    {file = "mistralai-1.5.0.tar.gz", hash = "sha256:fd94bc93bc25aad9c6dd8005b1a0bc4ba1250c6b3fbf855a49936989cc6e5c0d"},
+    {file = "mistralai-1.5.1-py3-none-any.whl", hash = "sha256:881f8a1b9a7966d15bd1eb4ed05df09483c261f826c1b9d153ceeca605dc79ac"},
+    {file = "mistralai-1.5.1.tar.gz", hash = "sha256:ce4b8c7aa587521c46dbc45d42e27575f6197c0229f47242e5b331875104707b"},
 ]
 
 [package.dependencies]
