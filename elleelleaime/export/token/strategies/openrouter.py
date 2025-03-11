@@ -60,6 +60,10 @@ class OpenRouterTokenStrategy(TokenStrategy):
             "prompt": 0.12,
             "completion": 0.18,
         },
+        "qwq-32b": {
+            "prompt": 0.12,
+            "completion": 0.18,
+        },
     }
 
     @staticmethod
