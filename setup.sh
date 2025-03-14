@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### Submodules
+## Submodules
 git submodule init;
 git submodule update;
 
@@ -22,3 +22,16 @@ poetry install;
 if [ -z "$CI" ]; then
  poetry run ./gitbug-java setup;
 fi
+cd ../..;
+
+### RunBugRun
+cd benchmarks/run_bug_run;
+
+wget https://github.com/giganticode/run_bug_run_data/releases/download/v0.0.1/python_valid0.jsonl.gz;
+wget https://github.com/giganticode/run_bug_run_data/releases/download/v0.0.1/tests_all.jsonl.gz;
+ 
+gzip -d python_valid0.jsonl.gz;
+gzip -d tests_all.jsonl.gz;
+
+tar -xvzf buggy_test_results.tgz;
+cd ../..;
