@@ -2,18 +2,18 @@
 
 [[package]]
 name = "accelerate"
-version = "1.5.1"
+version = "1.5.2"
 description = "Accelerate"
 optional = false
 python-versions = ">=3.9.0"
 groups = ["main"]
 files = [
-    {file = "accelerate-1.5.1-py3-none-any.whl", hash = "sha256:4838cff9ed1bb0ddc9d967530ced62a1d74ea21cdb57688400359ab32682f03e"},
-    {file = "accelerate-1.5.1.tar.gz", hash = "sha256:5d936faf3a31894c6160f2f2a984a38aecbba760ef919ae298b2ecd57ea9bf87"},
+    {file = "accelerate-1.5.2-py3-none-any.whl", hash = "sha256:68a3b272f6a6ffebb457bdc138581a2bf52efad6a5e0214dc46675f3edd98792"},
+    {file = "accelerate-1.5.2.tar.gz", hash = "sha256:a1cf39473edc0e42772a9d9a18c9eb1ce8ffd9e1719dc0ab80670f5c1fd4dc43"},
 ]
 
 [package.dependencies]
-huggingface_hub = ">=0.21.0"
+huggingface-hub = ">=0.21.0"
 numpy = ">=1.17,<3.0.0"
 packaging = ">=20.0"
 psutil = "*"
