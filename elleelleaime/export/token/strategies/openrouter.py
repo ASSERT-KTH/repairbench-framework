@@ -60,6 +60,10 @@ class OpenRouterTokenStrategy(TokenStrategy):
             "prompt": 0.12,
             "completion": 0.18,
         },
+        "gemma-3-27b": {
+            "prompt": 0.3,
+            "completion": 0.5,
+        },
     }
 
     @staticmethod
