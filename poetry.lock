@@ -3153,14 +3153,14 @@ telegram = ["requests"]
 
 [[package]]
 name = "transformers"
-version = "4.50.1"
+version = "4.50.2"
 description = "State-of-the-art Machine Learning for JAX, PyTorch and TensorFlow"
 optional = false
 python-versions = ">=3.9.0"
 groups = ["main"]
 files = [
-    {file = "transformers-4.50.1-py3-none-any.whl", hash = "sha256:e9b9bd274518150528c1d745c7ebba72d27e4e52f2deffaa1fddebad6912da5d"},
-    {file = "transformers-4.50.1.tar.gz", hash = "sha256:6ee542d2cce7e1b6a06ae350599c27ddf2e6e45ec9d0cb42915b37fca3d6399a"},
+    {file = "transformers-4.50.2-py3-none-any.whl", hash = "sha256:99bbcddd6570f080aee81f67844f4b46c8025bbdbdb86eafb82cc7d6aaafb190"},
+    {file = "transformers-4.50.2.tar.gz", hash = "sha256:dac6cef0e2698fb25b57edbc0b9af3732e4ca148ed008d3e3118203c4dd25055"},
 ]
 
 [package.dependencies]
