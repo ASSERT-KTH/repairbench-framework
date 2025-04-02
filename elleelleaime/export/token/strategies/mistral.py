@@ -19,6 +19,10 @@ class MistralTokenStrategy(TokenStrategy):
             "prompt": 0.3,
             "completion": 0.9,
         },
+        "mistral-small-2503": {
+            "prompt": 0.1,
+            "completion": 0.3,
+        },
     }
 
     @staticmethod
