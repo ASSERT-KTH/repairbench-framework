@@ -64,6 +64,10 @@ class OpenRouterTokenStrategy(TokenStrategy):
             "prompt": 0.3,
             "completion": 0.5,
         },
+        "deepseek-v3-0324": {
+            "prompt": 0.27,
+            "completion": 1.1,
+        },
     }
 
     @staticmethod
