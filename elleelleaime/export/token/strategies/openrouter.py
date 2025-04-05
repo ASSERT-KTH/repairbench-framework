@@ -68,6 +68,10 @@ class OpenRouterTokenStrategy(TokenStrategy):
             "prompt": 0.27,
             "completion": 1.1,
         },
+        "quasar-alpha": {
+            "prompt": 0,
+            "completion": 0,
+        },
     }
 
     @staticmethod
