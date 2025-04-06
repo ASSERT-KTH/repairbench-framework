@@ -72,6 +72,14 @@ class OpenRouterTokenStrategy(TokenStrategy):
             "prompt": 0,
             "completion": 0,
         },
+        "command-a": {
+            "prompt": 2.5,
+            "completion": 10,
+        },
+        "llama-4-maverick": {
+            "prompt": 0.2,
+            "completion": 0.6,
+        },
     }
 
     @staticmethod
