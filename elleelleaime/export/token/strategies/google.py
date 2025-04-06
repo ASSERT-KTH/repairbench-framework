@@ -19,6 +19,10 @@ class GoogleTokenStrategy(TokenStrategy):
             "prompt": 0.1,
             "completion": 0.4,
         },
+        "gemini-2.5-pro-preview-03-25": {
+            "prompt": 1.25,
+            "completion": 10.00,
+        },
     }
 
     __COST_PER_MILLION_TOKENS_OVER_128K = {
@@ -29,6 +33,13 @@ class GoogleTokenStrategy(TokenStrategy):
         "gemini-1.5-pro-002": {
             "prompt": 2.50,
             "completion": 10.00,
+        },
+    }
+
+    __COST_PER_MILLION_TOKENS_OVER_200K = {
+        "gemini-2.5-pro-preview-03-25": {
+            "prompt": 2.50,
+            "completion": 15.00,
         },
     }
 
@@ -65,6 +76,21 @@ class GoogleTokenStrategy(TokenStrategy):
 
                     # Determine cost rates based on token count
                     if (
+                        prompt_token_count > 200000
+                        and model_name
+                        in GoogleTokenStrategy.__COST_PER_MILLION_TOKENS_OVER_200K
+                    ):
+                        prompt_cost = (
+                            GoogleTokenStrategy.__COST_PER_MILLION_TOKENS_OVER_200K[
+                                model_name
+                            ]["prompt"]
+                        )
+                        completion_cost = (
+                            GoogleTokenStrategy.__COST_PER_MILLION_TOKENS_OVER_200K[
+                                model_name
+                            ]["completion"]
+                        )
+                    elif (
                         prompt_token_count > 128000
                         and model_name
                         in GoogleTokenStrategy.__COST_PER_MILLION_TOKENS_OVER_128K
