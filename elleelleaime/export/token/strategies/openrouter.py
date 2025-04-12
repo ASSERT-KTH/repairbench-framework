@@ -80,6 +80,10 @@ class OpenRouterTokenStrategy(TokenStrategy):
             "prompt": 0.2,
             "completion": 0.6,
         },
+        "optimus-alpha": {
+            "prompt": 0,
+            "completion": 0,
+        },
     }
 
     @staticmethod
