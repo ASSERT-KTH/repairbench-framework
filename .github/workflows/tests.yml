@@ -32,7 +32,7 @@ jobs:
           python -m poetry install
 
       - name: Setup Perl
-        uses: shogo82148/actions-setup-perl@v1.33.0
+        uses: shogo82148/actions-setup-perl@v1.34.0
         with:
           perl-version: "5.40.1"
 
