@@ -27,7 +27,8 @@ def generate_candidate(chunk: List[dict], strategy_name: str, **kwargs) -> List[
         and not (
             "generation" in sample
             and sample["generation"] is not None
-            and not (any("error" in generation for generation in sample["generation"]))
+            and not any(generation is None for generation in sample["generation"])
+            and not any("error" in generation for generation in sample["generation"])
         )
     ]
     logging.info(f"Gerating patches for {len(chunk_to_generate)} samples...")
