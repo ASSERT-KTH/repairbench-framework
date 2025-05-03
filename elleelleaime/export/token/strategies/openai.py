@@ -27,6 +27,14 @@ class OpenAITokenStrategy(TokenStrategy):
             "prompt": 1.1,
             "completion": 4.4,
         },
+        "o4-mini-2025-04-16-high": {
+            "prompt": 1.1,
+            "completion": 4.4,
+        },
+        "gpt-4.1-2025-04-14": {
+            "prompt": 2.0,
+            "completion": 8.0,
+        },
     }
 
     @staticmethod
