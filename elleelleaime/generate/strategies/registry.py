@@ -23,6 +23,9 @@ from elleelleaime.generate.strategies.models.mistral.mistral import (
 from elleelleaime.generate.strategies.models.huggingface.deepseek.deepseek_fim import (
     DeepSeekFIM,
 )
+from elleelleaime.generate.strategies.models.litellm.litellm import (
+    LiteLLMChatCompletionModels,
+)
 
 from typing import Tuple
 
@@ -43,6 +46,7 @@ class PatchGenerationStrategyRegistry:
         "anthropic": (AnthropicModels, ("model_name", "max_tokens")),
         "mistral": (MistralModels, ("model_name",)),
         "deepseek-fim": (DeepSeekFIM, ("model_name",)),
+        "litellm-chatcompletion": (LiteLLMChatCompletionModels, ()),
     }
 
     @classmethod

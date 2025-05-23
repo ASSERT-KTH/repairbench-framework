@@ -1,6 +1,5 @@
 from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
-from dotenv import load_dotenv
 from typing import Any, List
 
 import os
@@ -17,7 +16,6 @@ class OpenAIChatCompletionModels(PatchGenerationStrategy):
         self.base_url = kwargs.get("base_url", None)
         self.batching = kwargs.get("batching", True)
 
-        load_dotenv()
         openai.api_key = os.getenv("OPENAI_API_KEY")
         self.client = openai.OpenAI(api_key=openai.api_key, base_url=self.base_url)
 

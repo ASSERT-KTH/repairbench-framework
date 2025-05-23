@@ -1,6 +1,5 @@
 from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
-from dotenv import load_dotenv
 from typing import Any, List
 
 import os
@@ -14,7 +13,6 @@ class MistralModels(PatchGenerationStrategy):
         self.temperature = kwargs.get("temperature", 0.0)
         self.n_samples = kwargs.get("n_samples", 1)
 
-        load_dotenv()
         self.client = mistralai.Mistral(os.getenv("MISTRAL_API_KEY", None))
 
     @backoff.on_exception(
