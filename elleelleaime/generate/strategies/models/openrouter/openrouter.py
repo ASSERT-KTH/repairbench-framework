@@ -1,7 +1,6 @@
 import requests.exceptions
 from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
-from dotenv import load_dotenv
 from typing import Any, List
 
 import os
@@ -23,7 +22,6 @@ class OpenRouterModels(PatchGenerationStrategy):
         if self.provider:
             self.provider_args["order"] = [self.provider]
 
-        load_dotenv()
         self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
 
     @backoff.on_exception(
