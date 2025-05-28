@@ -23,6 +23,10 @@ class GoogleTokenStrategy(TokenStrategy):
             "prompt": 1.25,
             "completion": 10.00,
         },
+        "gemini-2.5-flash-preview-05-20": {
+            "prompt": 0.15,
+            "completion": 0.60,
+        },
     }
 
     __COST_PER_MILLION_TOKENS_OVER_128K = {
