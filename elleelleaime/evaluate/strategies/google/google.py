@@ -23,7 +23,12 @@ class GoogleEvaluationStrategy(InstructEvaluationStrategy):
 
         for generation in sample["generation"]:
             for candidate in generation["candidates"]:
-                if "content" not in candidate:
+                if (
+                    "content" not in candidate
+                    or "parts" not in candidate["content"]
+                    or not candidate["content"]["parts"]
+                    or "text" not in candidate["content"]["parts"][0]
+                ):
                     evaluation.append(None)
                     continue
                 candidate_patch = candidate["content"]["parts"][0]["text"]
