@@ -27,6 +27,10 @@ class GoogleTokenStrategy(TokenStrategy):
             "prompt": 0.15,
             "completion": 0.60,
         },
+        "gemini-2.5-pro-preview-05-06": {
+            "prompt": 1.25,
+            "completion": 10.00,
+        },
     }
 
     __COST_PER_MILLION_TOKENS_OVER_128K = {
@@ -42,6 +46,10 @@ class GoogleTokenStrategy(TokenStrategy):
 
     __COST_PER_MILLION_TOKENS_OVER_200K = {
         "gemini-2.5-pro-preview-03-25": {
+            "prompt": 2.50,
+            "completion": 15.00,
+        },
+        "gemini-2.5-pro-preview-05-06": {
             "prompt": 2.50,
             "completion": 15.00,
         },
