@@ -31,6 +31,10 @@ class MistralTokenStrategy(TokenStrategy):
             "prompt": 0.1,
             "completion": 0.3,
         },
+        "magistral-medium-2506": {
+            "prompt": 2.0,
+            "completion": 5.0,
+        },
     }
 
     @staticmethod
