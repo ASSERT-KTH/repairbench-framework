@@ -2,14 +2,14 @@
 
 [[package]]
 name = "accelerate"
-version = "1.8.0"
+version = "1.8.1"
 description = "Accelerate"
 optional = false
 python-versions = ">=3.9.0"
 groups = ["main"]
 files = [
-    {file = "accelerate-1.8.0-py3-none-any.whl", hash = "sha256:4c3460a8052e122fb124d92ec15618229951febbef1d7336a4c35371f78b72a1"},
-    {file = "accelerate-1.8.0.tar.gz", hash = "sha256:8b56553d570f4787fd34a33dc4613f5444fe1ba3d0e81fedb9ce27bd81e91423"},
+    {file = "accelerate-1.8.1-py3-none-any.whl", hash = "sha256:c47b8994498875a2b1286e945bd4d20e476956056c7941d512334f4eb44ff991"},
+    {file = "accelerate-1.8.1.tar.gz", hash = "sha256:f60df931671bc4e75077b852990469d4991ce8bd3a58e72375c3c95132034db9"},
 ]
 
 [package.dependencies]
