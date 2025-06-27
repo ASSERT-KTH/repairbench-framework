@@ -26,7 +26,7 @@ fi
 ### BugsInPy
 cd benchmarks/BugsInPy;
 git checkout docker;
-git pull origin docker;
+git reset --hard origin/docker;
 docker build -t bugsinpy .;
 # Start the container and keep it running
 docker run -d --name bugsinpy-container -it bugsinpy tail -f /dev/null;
