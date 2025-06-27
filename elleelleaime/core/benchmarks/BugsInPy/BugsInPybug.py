@@ -94,10 +94,10 @@ class BugsInPyBug(RichBug):
         # Check for various success indicators in pytest output
         if "OK" in last_line or "passed" in last_line or "PASSED" in last_line:
             success = True
-        
-        print(F"{project_name=}")
-        print(F"{bug_id=}")
-        print(F"{stdout_lines=}")
+
+        print(f"{project_name=}")
+        print(f"{bug_id=}")
+        print(f"{stdout_lines=}")
 
         return TestResult(success)
 
@@ -106,7 +106,6 @@ class BugsInPyBug(RichBug):
         path = f"/bugsinpy/framework/bin/temp/{project_name}/test"
 
         return path
-
 
 
 """

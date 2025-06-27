@@ -31,7 +31,7 @@ class TestBugsInPy:
             bug.checkout(bug_identifier, fixed=False)
 
             project_name, _ = bug_identifier.rsplit("-", 1)
-            
+
             # Check files inside the Docker container
             result = subprocess.run(
                 f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -type f | wc -l",
@@ -42,7 +42,7 @@ class TestBugsInPy:
             file_count = int(result.stdout.decode("utf-8").strip())
             if file_count == 0:
                 return False
-                
+
             # Check for Python files inside the container
             result = subprocess.run(
                 f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -name '*.py' | wc -l",
@@ -56,7 +56,7 @@ class TestBugsInPy:
 
             # Checkout fixed version
             bug.checkout(bug_identifier, fixed=True)
-            
+
             # Check files inside the Docker container again
             result = subprocess.run(
                 f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -type f | wc -l",
@@ -67,7 +67,7 @@ class TestBugsInPy:
             file_count = int(result.stdout.decode("utf-8").strip())
             if file_count == 0:
                 return False
-                
+
             # Check for Python files inside the container again
             result = subprocess.run(
                 f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -name '*.py' | wc -l",
@@ -126,7 +126,7 @@ class TestBugsInPy:
             if not checkout_success:
                 print(f"Failed to checkout buggy version for {bug.get_identifier()}")
                 return False
-                
+
             # Compile buggy version
             print(f"Compiling buggy version for {bug.get_identifier()}")
             compile_result = bug.compile(bug.get_identifier())
@@ -134,12 +134,14 @@ class TestBugsInPy:
             if not compile_result.is_passing():
                 print(f"Failed to compile buggy version for {bug.get_identifier()}")
                 return False
-                
+
             # Test buggy version
             print(f"Testing buggy version for {bug.get_identifier()}")
             test_result = bug.test(bug.get_identifier())
-            print(f"Buggy version test result for {bug.get_identifier()}: {test_result.is_passing()}")
-            
+            print(
+                f"Buggy version test result for {bug.get_identifier()}: {test_result.is_passing()}"
+            )
+
             # For BugsInPy, the buggy version might pass tests
             # This is not necessarily a failure - we just need to check that the fixed version works
 
@@ -150,7 +152,7 @@ class TestBugsInPy:
             if not checkout_success:
                 print(f"Failed to checkout fixed version for {bug.get_identifier()}")
                 return False
-                
+
             # Compile fixed version
             print(f"Compiling fixed version for {bug.get_identifier()}")
             compile_result = bug.compile(bug.get_identifier())
@@ -158,12 +160,14 @@ class TestBugsInPy:
             if not compile_result.is_passing():
                 print(f"Failed to compile fixed version for {bug.get_identifier()}")
                 return False
-                
+
             # Test fixed version
             print(f"Testing fixed version for {bug.get_identifier()}")
             test_result = bug.test(bug.get_identifier())
-            print(f"Fixed version test result for {bug.get_identifier()}: {test_result.is_passing()}")
-            
+            print(
+                f"Fixed version test result for {bug.get_identifier()}: {test_result.is_passing()}"
+            )
+
             # The fixed version should pass tests
             if not test_result.is_passing():
                 print(f"Fixed version failed tests for {bug.get_identifier()}")
@@ -174,6 +178,7 @@ class TestBugsInPy:
         except Exception as e:
             print(f"Exception in run_bug for {bug.get_identifier()}: {e}")
             import traceback
+
             traceback.print_exc()
             return False
         finally:

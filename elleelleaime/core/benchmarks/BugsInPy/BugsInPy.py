@@ -6,11 +6,7 @@ from elleelleaime.core.benchmarks.BugsInPy.BugsInPybug import BugsInPyBug
 
 import subprocess
 import logging
-
-# import tqdm
 import re
-
-# import os
 import pandas as pd
 
 
@@ -62,7 +58,12 @@ class BugsInPy(Benchmark):
                 try:
                     bug_id_str = bug_id.decode("utf-8").strip()
                     # Skip invalid bug IDs (files with extensions, special characters, etc.)
-                    if not bug_id_str.isdigit() or '.' in bug_id_str or '~' in bug_id_str or '$' in bug_id_str:
+                    if (
+                        not bug_id_str.isdigit()
+                        or "." in bug_id_str
+                        or "~" in bug_id_str
+                        or "$" in bug_id_str
+                    ):
                         logging.warning(f"Skipping invalid bug ID: {bug_id_str}")
                         continue
                     bug_id_int = int(bug_id_str)
@@ -84,7 +85,9 @@ class BugsInPy(Benchmark):
 
             for bug_id in bugs[project_name]:
                 # Extract ground truth diff
-                diff_path = f"/bugsinpy/projects/{project_name}/bugs/{bug_id}/bug_patch.txt"
+                diff_path = (
+                    f"/bugsinpy/projects/{project_name}/bugs/{bug_id}/bug_patch.txt"
+                )
                 try:
                     run = subprocess.run(
                         f"docker exec bugsinpy-container cat {diff_path}",
@@ -93,14 +96,18 @@ class BugsInPy(Benchmark):
                         check=True,
                     )
                     diff = run.stdout.decode("utf-8")
-                    
+
                     # Skip bugs with empty ground truth
                     if not diff.strip():
-                        logging.warning(f"Empty ground truth for {project_name}-{bug_id}, skipping...")
+                        logging.warning(
+                            f"Empty ground truth for {project_name}-{bug_id}, skipping..."
+                        )
                         continue
-                        
+
                 except subprocess.CalledProcessError:
-                    logging.warning(f"Could not read bug_patch.txt for {project_name}-{bug_id}, skipping...")
+                    logging.warning(
+                        f"Could not read bug_patch.txt for {project_name}-{bug_id}, skipping..."
+                    )
                     continue
 
                 # Extract failing test cases and trigger causes
