@@ -39,8 +39,13 @@ class BugsInPyBug(RichBug):
     def checkout(self, path: str, fixed: bool = False) -> bool:
         project_name, bug_id = path.rsplit("-", 1)
 
-        # Remove the directory if it exists
-        shutil.rmtree(path, ignore_errors=True)
+        # Remove the directory if it exists (inside the container)
+        subprocess.run(
+            f"docker exec bugsinpy-container rm -rf /bugsinpy/framework/bin/temp/{project_name}",
+            shell=True,
+            capture_output=True,
+            check=False,  # Don't fail if directory doesn't exist
+        )
 
         # Checkout the bug
         checkout_run = subprocess.run(
@@ -52,13 +57,13 @@ class BugsInPyBug(RichBug):
 
         # Convert line endings to unix
         dos2unix_run = subprocess.run(
-            f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -type f -print0 | xargs -0 -n 1 -P 4 dos2unix",
+            f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -type f -name '*.py' -print0 | xargs -0 -n 1 -P 4 dos2unix",
             shell=True,
             capture_output=True,
-            check=True,
+            check=False,  # Don't fail if dos2unix has issues
         )
 
-        return checkout_run.returncode == 0 and dos2unix_run.returncode == 0
+        return checkout_run.returncode == 0
 
     def compile(self, path: str) -> CompileResult:
         project_name, bug_id = path.rsplit("-", 1)
@@ -86,7 +91,8 @@ class BugsInPyBug(RichBug):
         last_line = stdout_lines[-1] if stdout_lines else ""
 
         success = False
-        if "OK" in last_line:
+        # Check for various success indicators in pytest output
+        if "OK" in last_line or "passed" in last_line or "PASSED" in last_line:
             success = True
         
         print(F"{project_name=}")

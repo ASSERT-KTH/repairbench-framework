@@ -60,7 +60,12 @@ class BugsInPy(Benchmark):
             bugs[project_name] = set()
             for bug_id in run.stdout.split():
                 try:
-                    bug_id_int = int(bug_id.decode("utf-8"))
+                    bug_id_str = bug_id.decode("utf-8").strip()
+                    # Skip invalid bug IDs (files with extensions, special characters, etc.)
+                    if not bug_id_str.isdigit() or '.' in bug_id_str or '~' in bug_id_str or '$' in bug_id_str:
+                        logging.warning(f"Skipping invalid bug ID: {bug_id_str}")
+                        continue
+                    bug_id_int = int(bug_id_str)
                     bugs[project_name].add(bug_id_int)
                 except ValueError:
                     logging.warning(
@@ -80,14 +85,23 @@ class BugsInPy(Benchmark):
             for bug_id in bugs[project_name]:
                 # Extract ground truth diff
                 diff_path = f"/bugsinpy/projects/{project_name}/bugs/{bug_id}/bug_patch.txt"
-                # Read file content from container
-                run = subprocess.run(
-                    f"docker exec bugsinpy-container cat {diff_path}",
-                    shell=True,
-                    capture_output=True,
-                    check=True,
-                )
-                diff = run.stdout.decode("utf-8")
+                try:
+                    run = subprocess.run(
+                        f"docker exec bugsinpy-container cat {diff_path}",
+                        shell=True,
+                        capture_output=True,
+                        check=True,
+                    )
+                    diff = run.stdout.decode("utf-8")
+                    
+                    # Skip bugs with empty ground truth
+                    if not diff.strip():
+                        logging.warning(f"Empty ground truth for {project_name}-{bug_id}, skipping...")
+                        continue
+                        
+                except subprocess.CalledProcessError:
+                    logging.warning(f"Could not read bug_patch.txt for {project_name}-{bug_id}, skipping...")
+                    continue
 
                 # Extract failing test cases and trigger causes
                 # failing_test_cases = df[df["bug_id"] == bug_id]["tests"].values[0]
@@ -137,6 +151,6 @@ class BugsInPy(Benchmark):
                         bug_id=bug_id,
                         version_id="0",  # 0 buggy -- is this always the case?
                         ground_truth=diff,
-                        failing_tests=None,  # needs to be checked out for this?
+                        failing_tests={},  # needs to be checked out for this?
                     )
                 )
