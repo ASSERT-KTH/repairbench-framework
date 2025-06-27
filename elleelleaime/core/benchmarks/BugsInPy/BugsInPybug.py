@@ -33,10 +33,10 @@ class BugsInPyBug(RichBug):
             f"{project_name}-{bug_id}",
             ground_truth,
             failing_tests,
-            # ground_truth_inverted=True, # TODO: TypeError: Bug.__init__() got multiple values for argument 'ground_truth_inverted'
+            ground_truth_inverted=False,
         )
 
-    def checkout(self, path: str, fixed: bool = 0) -> bool:
+    def checkout(self, path: str, fixed: bool = False) -> bool:
         project_name, bug_id = path.rsplit("-", 1)
 
         # Remove the directory if it exists
@@ -44,8 +44,7 @@ class BugsInPyBug(RichBug):
 
         # Checkout the bug
         checkout_run = subprocess.run(
-            f"{self.benchmark.get_bin()}/bugsinpy-checkout -p {project_name} -v {fixed} -i {bug_id}",  # 1 fixed, 0 buggy
-            # f"{self.benchmark.get_bin()}/bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id}",
+            f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-checkout -p {project_name} -v {fixed} -i {bug_id}",  # 1 fixed, 0 buggy
             shell=True,
             capture_output=True,
             check=True,
@@ -53,7 +52,7 @@ class BugsInPyBug(RichBug):
 
         # Convert line endings to unix
         dos2unix_run = subprocess.run(
-            f"find {path} -type f -print0 | xargs -0 -n 1 -P 4 dos2unix",
+            f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -type f -print0 | xargs -0 -n 1 -P 4 dos2unix",
             shell=True,
             capture_output=True,
             check=True,
@@ -64,7 +63,7 @@ class BugsInPyBug(RichBug):
     def compile(self, path: str) -> CompileResult:
         project_name, bug_id = path.rsplit("-", 1)
         run = subprocess.run(
-            f"{self.benchmark.get_bin()}/bugsinpy-compile -w {self.benchmark.get_bin()}/temp/{project_name}",
+            f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-compile -w /bugsinpy/framework/bin/temp/{project_name}",
             shell=True,
             capture_output=True,
             check=True,
@@ -76,7 +75,7 @@ class BugsInPyBug(RichBug):
         project_name, bug_id = path.rsplit("-", 1)
 
         run = subprocess.run(
-            f"{self.benchmark.get_bin()}/bugsinpy-test -w {self.benchmark.get_bin()}/temp/{project_name}",
+            f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-test -w /bugsinpy/framework/bin/temp/{project_name}",
             shell=True,
             capture_output=True,
             check=False,
@@ -86,15 +85,42 @@ class BugsInPyBug(RichBug):
         stdout_lines = run.stdout.decode("utf-8").strip().splitlines()
         last_line = stdout_lines[-1] if stdout_lines else ""
 
+        success = False
         if "OK" in last_line:
             success = True
-        elif "FAILED" in last_line:
-            success = False
+        
+        print(F"{project_name=}")
+        print(F"{bug_id=}")
+        print(F"{stdout_lines=}")
 
         return TestResult(success)
 
     def get_src_test_dir(self, path: str) -> str:
         project_name, bug_id = path.rsplit("-", 1)
-        path = f"{self.benchmark.get_bin()}/temp/{project_name}/test"
+        path = f"/bugsinpy/framework/bin/temp/{project_name}/test"
 
         return path
+
+
+
+"""
+Notes:
+    - youtube-dl:
+        - all tests pass
+    - tqdm:
+        - `poetry add nose`
+        - relies on `imp` module
+            - not compatible with current Python version
+    - tornado:
+        - 10, 12, 13, 5, 6, 7, 8, 9:
+            - `collections.MutableMapping` was removed from the standard collections module in Python 3.10
+            - Not compatible with current Python version
+        - 11, 15: backports
+        - 3: buggy version works
+    - thefuck:
+        - relies on `imp` module
+            - not compatible with current Python version
+    - ansible:
+        - The current project's supported Python range (>=3.10,<4.0) is not compatible with some of the required packages Python requirement:
+        - ansible requires Python >=3.11, so it will not be satisfied for Python >=3.10,<3.11
+"""

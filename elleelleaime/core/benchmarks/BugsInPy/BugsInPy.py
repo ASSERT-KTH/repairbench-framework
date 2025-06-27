@@ -33,7 +33,7 @@ class BugsInPy(Benchmark):
 
         # Get all project names
         run = subprocess.run(
-            f"ls {self.path}/projects",
+            f"docker exec bugsinpy-container ls /bugsinpy/projects",
             shell=True,
             capture_output=True,
             check=True,
@@ -48,7 +48,7 @@ class BugsInPy(Benchmark):
         # for project_name in tqdm.tqdm(project_names):
         for project_name in project_names:
             run = subprocess.run(
-                f"ls {self.path}/projects/{project_name}/bugs",
+                f"docker exec bugsinpy-container ls /bugsinpy/projects/{project_name}/bugs",
                 shell=True,
                 capture_output=True,
                 check=True,
@@ -79,9 +79,15 @@ class BugsInPy(Benchmark):
 
             for bug_id in bugs[project_name]:
                 # Extract ground truth diff
-                diff_path = f"benchmarks/BugsInPy/projects/{project_name}/bugs/{bug_id}/bug_patch.txt"
-                with open(diff_path, "r", encoding="ISO-8859-1") as diff_file:
-                    diff = diff_file.read()
+                diff_path = f"/bugsinpy/projects/{project_name}/bugs/{bug_id}/bug_patch.txt"
+                # Read file content from container
+                run = subprocess.run(
+                    f"docker exec bugsinpy-container cat {diff_path}",
+                    shell=True,
+                    capture_output=True,
+                    check=True,
+                )
+                diff = run.stdout.decode("utf-8")
 
                 # Extract failing test cases and trigger causes
                 # failing_test_cases = df[df["bug_id"] == bug_id]["tests"].values[0]
@@ -90,7 +96,7 @@ class BugsInPy(Benchmark):
                 # Moved into BugsInPybug.py
                 # # Checkout the bug
                 # checkout_run = subprocess.run(
-                #     f"{self.benchmark.get_bin()}bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id}",
+                #     f"docker exec -it bugsinpy-container {self.benchmark.get_bin()}bugsinpy-checkout -p {self.project_name} -v {self.version_id} -i {self.bug_id}",
                 #     shell=True,
                 #     capture_output=True,
                 #     check=True,
@@ -99,14 +105,14 @@ class BugsInPy(Benchmark):
                 # # Compile and test the bug
                 # path = f"{self.benchmark.get_bin()}/temp/{project_name}"
                 # checkout_compile = subprocess.run(
-                #     f"{self.benchmark.get_bin()}bugsinpy-compile -w {path}",
+                #     f"docker exec -it bugsinpy-container {self.benchmark.get_bin()}bugsinpy-compile -w {path}",
                 #     shell=True,
                 #     capture_output=True,
                 #     check=True,
                 # )
 
                 # checkout_compile = subprocess.run(
-                #     f"{self.benchmark.get_bin()}bugsinpy-test -w {path}",
+                #     f"docker exec -it bugsinpy-container {self.benchmark.get_bin()}bugsinpy-test -w {path}",
                 #     shell=True,
                 #     capture_output=True,
                 #     check=True,
@@ -129,7 +135,7 @@ class BugsInPy(Benchmark):
                         self,
                         project_name=project_name,
                         bug_id=bug_id,
-                        version_id=0,  # 0 buggy -- is this always the case?
+                        version_id="0",  # 0 buggy -- is this always the case?
                         ground_truth=diff,
                         failing_tests=None,  # needs to be checked out for this?
                     )
