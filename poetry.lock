@@ -610,14 +610,14 @@ tests = ["pytest"]
 
 [[package]]
 name = "evaluate"
-version = "0.4.4"
+version = "0.4.5"
 description = "HuggingFace community-driven open-source library of evaluation"
 optional = false
 python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "evaluate-0.4.4-py3-none-any.whl", hash = "sha256:e7e10d2617847a6127f023dd444ba241c7a1c8e3e081f72b15f35686e8220dbd"},
-    {file = "evaluate-0.4.4.tar.gz", hash = "sha256:e02b9bae6a70cccb3bd1c1e46d28de4e9d00b9b76f2889ad48b7b51fa58373a4"},
+    {file = "evaluate-0.4.5-py3-none-any.whl", hash = "sha256:ab1528b8199af20fa8670cc5bf8e5d8443929dfa2e3d7483b458d8fdff6933d1"},
+    {file = "evaluate-0.4.5.tar.gz", hash = "sha256:8c870c016d63899d45b3d9206f3365fd332836ad81b3f335e89ff618d93e0051"},
 ]
 
 [package.dependencies]
