@@ -184,28 +184,29 @@ files = [
 
 [[package]]
 name = "anthropic"
-version = "0.49.0"
+version = "0.62.0"
 description = "The official Python library for the anthropic API"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "anthropic-0.49.0-py3-none-any.whl", hash = "sha256:bbc17ad4e7094988d2fa86b87753ded8dce12498f4b85fe5810f208f454a8375"},
-    {file = "anthropic-0.49.0.tar.gz", hash = "sha256:c09e885b0f674b9119b4f296d8508907f6cff0009bc20d5cf6b35936c40b4398"},
+    {file = "anthropic-0.62.0-py3-none-any.whl", hash = "sha256:adcf2af98aa2b11e3b7c71afb2e0cb0613f679ad4a18ef58c38f17784b3df72e"},
+    {file = "anthropic-0.62.0.tar.gz", hash = "sha256:d45389229db9e443ea1a877f8d63309947f134991473cf8e88efee322840d084"},
 ]
 
 [package.dependencies]
 anyio = ">=3.5.0,<5"
 distro = ">=1.7.0,<2"
-httpx = ">=0.23.0,<1"
+httpx = ">=0.25.0,<1"
 jiter = ">=0.4.0,<1"
 pydantic = ">=1.9.0,<3"
 sniffio = "*"
 typing-extensions = ">=4.10,<5"
 
 [package.extras]
+aiohttp = ["aiohttp", "httpx-aiohttp (>=0.1.8)"]
 bedrock = ["boto3 (>=1.28.57)", "botocore (>=1.31.57)"]
-vertex = ["google-auth (>=2,<3)"]
+vertex = ["google-auth[requests] (>=2,<3)"]
 
 [[package]]
 name = "anyio"
@@ -4471,4 +4472,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "b9513005f3b8f02d7041894cc1e96fc45524ed3f3720d76609344dc00d37bd3d"
+content-hash = "04e3639800f2f62f61482398799e4ca1d2f7c0ad5cfb8cca500af449dde423f7"
