@@ -1280,6 +1280,18 @@ files = [
 ]
 
 [[package]]
+name = "invoke"
+version = "2.2.0"
+description = "Pythonic task execution"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "invoke-2.2.0-py3-none-any.whl", hash = "sha256:6ea924cc53d4f78e3d98bc436b08069a03077e6f85ad1ddaa8a116d7dad15820"},
+    {file = "invoke-2.2.0.tar.gz", hash = "sha256:ee6cbb101af1a859c7fe84f2a264c059020b0cb7fe3535f9424300ab568f6bd5"},
+]
+
+[[package]]
 name = "jinja2"
 version = "3.1.6"
 description = "A very fast and expressive template engine."
@@ -1527,21 +1539,23 @@ files = [
 
 [[package]]
 name = "mistralai"
-version = "1.9.3"
+version = "1.9.6"
 description = "Python Client SDK for the Mistral AI API."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "mistralai-1.9.3-py3-none-any.whl", hash = "sha256:962445e7cebadcbfbcd1daf973e853a832dcf7aba6320468fcf7e2cf5f943aec"},
-    {file = "mistralai-1.9.3.tar.gz", hash = "sha256:a69806247ed3a67820ecfc9a68b7dbc0c6120dad5e5c3d507bd57fa388b491b7"},
+    {file = "mistralai-1.9.6-py3-none-any.whl", hash = "sha256:682dcb3561154450496172619b6148bd208cc0a9f8eb81c6def218b8ed127eec"},
+    {file = "mistralai-1.9.6.tar.gz", hash = "sha256:0ebc71812abbbc47cefc019c6a850f81763fa0ab21bd984b8feaccfd09e285b1"},
 ]
 
 [package.dependencies]
 eval-type-backport = ">=0.2.0"
 httpx = ">=0.28.1"
+invoke = ">=2.2.0,<3.0.0"
 pydantic = ">=2.10.3"
 python-dateutil = ">=2.8.2"
+pyyaml = ">=6.0.2,<7.0.0"
 typing-inspection = ">=0.4.0"
 
 [package.extras]
