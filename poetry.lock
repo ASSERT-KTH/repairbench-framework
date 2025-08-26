@@ -852,7 +852,7 @@ google-api-core = {version = ">=1.34.1,<2.0.dev0 || >=2.11.dev0,<3.0.0dev", extr
 google-auth = ">=2.14.1,<2.24.0 || >2.24.0,<2.25.0 || >2.25.0,<3.0.0dev"
 proto-plus = [
     {version = ">=1.25.0,<2.0.0dev", markers = "python_version >= \"3.13\""},
-    {version = ">=1.22.3,<2.0.0dev", markers = "python_version < \"3.13\""},
+    {version = ">=1.22.3,<2.0.0dev"},
 ]
 protobuf = ">=3.20.2,<4.21.0 || >4.21.0,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<6.0.0dev"
 
@@ -881,7 +881,7 @@ grpcio-status = [
 ]
 proto-plus = [
     {version = ">=1.25.0,<2.0.0", markers = "python_version >= \"3.13\""},
-    {version = ">=1.22.3,<2.0.0"},
+    {version = ">=1.22.3,<2.0.0", markers = "python_version < \"3.13\""},
 ]
 protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.0 || >4.21.0,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<7.0.0"
 requests = ">=2.18.0,<3.0.0"
@@ -1538,14 +1538,14 @@ files = [
 
 [[package]]
 name = "mistralai"
-version = "1.9.6"
+version = "1.9.9"
 description = "Python Client SDK for the Mistral AI API."
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "mistralai-1.9.6-py3-none-any.whl", hash = "sha256:682dcb3561154450496172619b6148bd208cc0a9f8eb81c6def218b8ed127eec"},
-    {file = "mistralai-1.9.6.tar.gz", hash = "sha256:0ebc71812abbbc47cefc019c6a850f81763fa0ab21bd984b8feaccfd09e285b1"},
+    {file = "mistralai-1.9.9-py3-none-any.whl", hash = "sha256:6742fdbf4a277b605287538761e2665b6fb025328676a024868734ffe78ef72f"},
+    {file = "mistralai-1.9.9.tar.gz", hash = "sha256:025ae6f45dba8b7585642bc6fa214316138546a0cac692c6ec8e1187424da54a"},
 ]
 
 [package.dependencies]
