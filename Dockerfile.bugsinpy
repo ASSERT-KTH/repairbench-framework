@@ -1,0 +1,39 @@
+FROM python:3.12-slim-bookworm
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    build-essential \
+    dos2unix \
+    wget \
+    curl \
+    vim \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv package manager (modern Python dependency resolver)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Set environment variables
+ENV BUGSINPY_HOME="/bugsinpy"
+ENV PATH="$BUGSINPY_HOME/framework/bin:${PATH}"
+
+# Set working directory
+WORKDIR /bugsinpy
+
+# Copy the BugsInPy project
+COPY benchmarks/BugsInPy /bugsinpy
+
+# Make the bin scripts executable
+RUN chmod +x /bugsinpy/framework/bin/*
+
+# Create a directory for temporary work
+RUN mkdir -p /bugsinpy/framework/bin/temp
+
+# Install Python dependencies for BugsInPy and common packages for projects
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip3 install --no-cache-dir six pytest python-toolbox backoff future decorator pandas unidiff ansible
+
+# Set default command
+CMD ["bash"]

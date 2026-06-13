@@ -2,11 +2,59 @@ import subprocess
 import shutil
 import re
 import os
+import logging
 
 from elleelleaime.core.benchmarks.benchmark import Benchmark
 from elleelleaime.core.benchmarks.bug import RichBug
 from elleelleaime.core.benchmarks.test_result import TestResult
 from elleelleaime.core.benchmarks.compile_result import CompileResult
+
+
+class StructuredFormatter(logging.Formatter):
+    """Custom formatter for structured BugsInPy logging output"""
+
+    def format(self, record):
+        # Extract bug info from message (format: "bug_id|command|status|error")
+        message = record.getMessage()
+
+        if "|" in message:
+            parts = message.split("|", 3)
+            bug_id = parts[0].strip()
+            command = parts[1].strip()
+            status = parts[2].strip()
+            error = parts[3].strip() if len(parts) > 3 else ""
+
+            output = f"Bug: {bug_id}\nCommand: {command}\nResult: {status}"
+            if error:
+                output += f"\nError: {error}"
+            # output += "\n\n\n"  # 3 empty lines
+
+            return output
+
+        return message
+
+
+# Configure logging for BugsInPy
+logger = logging.getLogger("BugsInPy")
+if not logger.handlers:
+    logger.setLevel(logging.DEBUG)
+
+    # File handler - writes to bug_overview.log
+    file_handler = logging.FileHandler("bug_overview.log", mode="w")
+    file_handler.setLevel(logging.DEBUG)
+
+    # Console handler - for console output
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+
+    # Use custom formatter
+    formatter = StructuredFormatter()
+
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
 
 
 class BugsInPyBug(RichBug):
@@ -36,6 +84,7 @@ class BugsInPyBug(RichBug):
 
     def checkout(self, path: str, fixed: bool = False) -> bool:
         project_name, bug_id = path.rsplit("-", 1)
+        version_type = "fixed" if fixed else "buggy"
 
         # Remove the directory if it exists (inside the container)
         subprocess.run(
@@ -46,8 +95,10 @@ class BugsInPyBug(RichBug):
         )
 
         # Checkout the bug
+        checkout_cmd = f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-checkout -p {project_name} -v {fixed} -i {bug_id}"
+
         checkout_run = subprocess.run(
-            f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-checkout -p {project_name} -v {fixed} -i {bug_id}",  # 1 fixed, 0 buggy
+            checkout_cmd,
             shell=True,
             capture_output=True,
             check=True,
@@ -61,24 +112,43 @@ class BugsInPyBug(RichBug):
             check=False,  # Don't fail if dos2unix has issues
         )
 
-        return checkout_run.returncode == 0
+        success = checkout_run.returncode == 0
+        if success:
+            logger.info(f"{path}|{checkout_cmd}|SUCCESS|")
+        else:
+            error_msg = checkout_run.stderr.decode('utf-8') if checkout_run.stderr else f"Return code: {checkout_run.returncode}"
+            logger.error(f"{path}|{checkout_cmd}|FAILED|{error_msg}")
+
+        return success
 
     def compile(self, path: str) -> CompileResult:
         project_name, bug_id = path.rsplit("-", 1)
+        work_dir = f"/bugsinpy/framework/bin/temp/{project_name}"
+        compile_cmd = f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-compile -w {work_dir}"
+
         run = subprocess.run(
-            f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-compile -w /bugsinpy/framework/bin/temp/{project_name}",
+            compile_cmd,
             shell=True,
             capture_output=True,
-            check=True,
+            check=False,
         )
 
-        return CompileResult(run.returncode == 0)
+        success = run.returncode == 0
+        if success:
+            logger.info(f"{path}|{compile_cmd}|SUCCESS|")
+        else:
+            error_msg = run.stderr.decode('utf-8') if run.stderr else f"Return code: {run.returncode}"
+            logger.error(f"{path}|{compile_cmd}|FAILED|{error_msg}")
+
+        return CompileResult(success)
 
     def test(self, path: str) -> TestResult:
         project_name, bug_id = path.rsplit("-", 1)
+        work_dir = f"/bugsinpy/framework/bin/temp/{project_name}"
+        test_cmd = f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-test -w {work_dir}"
 
         run = subprocess.run(
-            f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-test -w /bugsinpy/framework/bin/temp/{project_name}",
+            test_cmd,
             shell=True,
             capture_output=True,
             check=False,
@@ -92,6 +162,16 @@ class BugsInPyBug(RichBug):
         # Check for various success indicators in pytest output
         if "OK" in last_line or "passed" in last_line or "PASSED" in last_line:
             success = True
+
+        if success:
+            logger.info(f"{path}|{test_cmd}|SUCCESS|")
+        else:
+            error_output = last_line
+            if run.stderr:
+                stderr_output = run.stderr.decode("utf-8").strip()
+                if stderr_output:
+                    error_output = f"{error_output}\n{stderr_output}"
+            logger.error(f"{path}|{test_cmd}|FAILED|{error_output}")
 
         return TestResult(success)
 
