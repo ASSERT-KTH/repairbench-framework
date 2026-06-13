@@ -1,37 +1,46 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.8-slim-bullseye
 
-# Install system dependencies
+# Install core system utilities needed by BugsInPy and Miniconda
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    build-essential \
-    dos2unix \
-    wget \
     curl \
-    vim \
     ca-certificates \
+    git \
+    dos2unix \
+    vim \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv package manager (modern Python dependency resolver)
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.local/bin:${PATH}"
+# Install Miniconda (Crucial for isolating legacy Python project versions)
+ENV CONDA_DIR=/opt/conda
+RUN curl -sS https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /miniconda.sh && \
+    chmod +x /miniconda.sh && \
+    /miniconda.sh -b -p $CONDA_DIR && \
+    rm /miniconda.sh
+ENV PATH="$CONDA_DIR/bin:${PATH}"
 
-# Set environment variables
+# Initialize Conda for shell interactions
+RUN conda init bash
+
+# Install uv package manager
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+
+# Set framework environment variables
+ENV PATH="/root/.local/bin:${PATH}"
 ENV BUGSINPY_HOME="/bugsinpy"
 ENV PATH="$BUGSINPY_HOME/framework/bin:${PATH}"
 
 # Set working directory
 WORKDIR /bugsinpy
 
-# Copy the BugsInPy project
+# Copy the BugsInPy project files
 COPY benchmarks/BugsInPy /bugsinpy
 
-# Make the bin scripts executable
-RUN chmod +x /bugsinpy/framework/bin/*
+# Make framework binaries executable and create temp directory
+RUN chmod +x /bugsinpy/framework/bin/* && \
+    mkdir -p /bugsinpy/framework/bin/temp
 
-# Create a directory for temporary work
-RUN mkdir -p /bugsinpy/framework/bin/temp
-
-# Install Python dependencies for BugsInPy and common packages for projects
+# Install Python dependencies required by the BugsInPy framework scripts
 RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
     pip3 install --no-cache-dir six pytest python-toolbox backoff future decorator pandas unidiff ansible
 

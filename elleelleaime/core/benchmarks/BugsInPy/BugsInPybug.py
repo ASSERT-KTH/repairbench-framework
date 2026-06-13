@@ -84,7 +84,7 @@ class BugsInPyBug(RichBug):
 
     def checkout(self, path: str, fixed: bool = False) -> bool:
         project_name, bug_id = path.rsplit("-", 1)
-        version_type = "fixed" if fixed else "buggy"
+        version = "1" if fixed else "0"  # 1 fixed, 0 buggy
 
         # Remove the directory if it exists (inside the container)
         subprocess.run(
@@ -95,7 +95,7 @@ class BugsInPyBug(RichBug):
         )
 
         # Checkout the bug
-        checkout_cmd = f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-checkout -p {project_name} -v {fixed} -i {bug_id}"
+        checkout_cmd = f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-checkout -p {project_name} -v {version} -i {bug_id}"
 
         checkout_run = subprocess.run(
             checkout_cmd,
@@ -116,7 +116,11 @@ class BugsInPyBug(RichBug):
         if success:
             logger.info(f"{path}|{checkout_cmd}|SUCCESS|")
         else:
-            error_msg = checkout_run.stderr.decode('utf-8') if checkout_run.stderr else f"Return code: {checkout_run.returncode}"
+            error_msg = (
+                checkout_run.stderr.decode("utf-8")
+                if checkout_run.stderr
+                else f"Return code: {checkout_run.returncode}"
+            )
             logger.error(f"{path}|{checkout_cmd}|FAILED|{error_msg}")
 
         return success
@@ -137,7 +141,11 @@ class BugsInPyBug(RichBug):
         if success:
             logger.info(f"{path}|{compile_cmd}|SUCCESS|")
         else:
-            error_msg = run.stderr.decode('utf-8') if run.stderr else f"Return code: {run.returncode}"
+            error_msg = (
+                run.stderr.decode("utf-8")
+                if run.stderr
+                else f"Return code: {run.returncode}"
+            )
             logger.error(f"{path}|{compile_cmd}|FAILED|{error_msg}")
 
         return CompileResult(success)
@@ -160,8 +168,7 @@ class BugsInPyBug(RichBug):
 
         success = False
         # Check for various success indicators in pytest output
-        if "OK" in last_line or "passed" in last_line or "PASSED" in last_line:
-            success = True
+        success = run.returncode == 0
 
         if success:
             logger.info(f"{path}|{test_cmd}|SUCCESS|")
@@ -236,36 +243,3 @@ class BugsInPyBug(RichBug):
         except Exception as e:
             print(f"Failed to extract failing tests for {self.get_identifier()}: {e}")
             return {}
-
-    def checkout_fixed(self, path: str, fixed: bool = False) -> bool:
-        """
-        Fixed version of checkout that properly handles the version parameter.
-        """
-        project_name, bug_id = path.rsplit("-", 1)
-
-        # Remove the directory if it exists (inside the container)
-        subprocess.run(
-            f"docker exec bugsinpy-container rm -rf /bugsinpy/framework/bin/temp/{project_name}",
-            shell=True,
-            capture_output=True,
-            check=False,  # Don't fail if directory doesn't exist
-        )
-
-        # Checkout the bug with correct version parameter
-        version = "1" if fixed else "0"  # 1 fixed, 0 buggy
-        checkout_run = subprocess.run(
-            f"docker exec bugsinpy-container /bugsinpy/framework/bin/bugsinpy-checkout -p {project_name} -v {version} -i {bug_id}",
-            shell=True,
-            capture_output=True,
-            check=True,
-        )
-
-        # Convert line endings to unix
-        dos2unix_run = subprocess.run(
-            f"docker exec bugsinpy-container find /bugsinpy/framework/bin/temp/{project_name} -type f -name '*.py' -print0 | xargs -0 -n 1 -P 4 dos2unix",
-            shell=True,
-            capture_output=True,
-            check=False,  # Don't fail if dos2unix has issues
-        )
-
-        return checkout_run.returncode == 0

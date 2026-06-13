@@ -24,8 +24,8 @@
 # fi
 
 ### BugsInPy
-docker build -t bugsinpy -f Dockerfile.bugsinpy .;
+docker build -t bugsinpy -f Dockerfile.bugsinpy .
 # Start the container and keep it running
-docker run -d --name bugsinpy-container -it bugsinpy tail -f /dev/null;
+docker run -d --name bugsinpy-container -it bugsinpy tail -f /dev/null
 # Initialize container
-docker exec bugsinpy-container bash -c "mkdir -p /bugsinpy/framework/bin/temp && chmod +x /bugsinpy/framework/bin/*";
+docker exec bugsinpy-container bash -c "mkdir -p /bugsinpy/framework/bin/temp && chmod +x /bugsinpy/framework/bin/*"
