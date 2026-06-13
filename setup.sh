@@ -1,8 +1,8 @@
 #!/bin/bash
 
-### Submodules
-# git submodule init;
-# git submodule update;
+## Submodules
+git submodule init;
+git submodule update;
 
 # ### Java and Maven images
 # docker pull openjdk:11;
