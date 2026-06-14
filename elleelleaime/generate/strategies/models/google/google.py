@@ -2,7 +2,6 @@ import google.api_core
 import google.api_core.exceptions
 from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
-from dotenv import load_dotenv
 from typing import Any, List
 
 import os
@@ -21,7 +20,6 @@ class GoogleModels(PatchGenerationStrategy):
         self.temperature = kwargs.get("temperature", 0.0)
         self.n_samples = kwargs.get("n_samples", 1)
 
-        load_dotenv()
         genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
     def __get_config(self):

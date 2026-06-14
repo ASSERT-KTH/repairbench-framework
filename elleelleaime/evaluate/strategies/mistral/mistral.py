@@ -1,4 +1,4 @@
-from ..text.instruct import InstructEvaluationStrategy
+from elleelleaime.evaluate.strategies.text.instruct import InstructEvaluationStrategy
 from elleelleaime.core.benchmarks.bug import Bug
 
 from typing import Optional, List

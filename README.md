@@ -7,6 +7,7 @@ Supported benchmarks:
   * GitBug-Java
   * HumanEval-Java
   * QuixBugs
+  * RunBugRun
 
 For the RepairBench patches and results, please refer to [https://github.com/ASSERT-KTH/repairbench](https://github.com/ASSERT-KTH/repairbench)
 

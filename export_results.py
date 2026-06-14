@@ -1,5 +1,5 @@
 from elleelleaime.core.utils.jsonl import stream_jsonl
-from elleelleaime.export.cost.cost_calculator import CostCalculator
+from elleelleaime.export.token.token_calculator import TokenCalculator
 from elleelleaime.core.caching.cache import Cache
 
 from pathlib import Path
@@ -188,11 +188,11 @@ def compute_statistics(samples: list) -> dict:
     return statistics
 
 
-def compute_costs(samples: list, provider: str, model_name: str) -> Optional[dict]:
+def compute_usage(samples: list, provider: str, model_name: str) -> Optional[dict]:
     """
-    Computes the costs of the evaluation.
+    Computes the usage of the evaluation.
     """
-    return CostCalculator.compute_costs(samples, provider, model_name)
+    return TokenCalculator.compute_usage(samples, provider, model_name)
 
 
 def export_patches(samples: list, dir_path: str) -> None:
@@ -342,19 +342,19 @@ def entry_point(
     ) as f:
         json.dump(statistics, f, indent=4)
 
-    # Compute costs for all samples
+    # Compute usages for all samples
     model_name = kwargs.get("model_name", None)
     if provider:
-        costs = compute_costs(samples, provider, model_name)
-        if costs is not None:
-            costs["provider"] = provider
+        usage = compute_usage(samples, provider, model_name)
+        if usage is not None:
+            usage["provider"] = provider
             with open(
                 os.path.join(
-                    dir_path, f"costs_{benchmark}_{prompt_strategy}_{provider}.json"
+                    dir_path, f"usage_{benchmark}_{prompt_strategy}_{provider}.json"
                 ),
                 "w",
             ) as f:
-                json.dump(costs, f, indent=4)
+                json.dump(usage, f, indent=4)
 
     # Export patches to text files in structured directories
     export_patches(samples, dir_path)

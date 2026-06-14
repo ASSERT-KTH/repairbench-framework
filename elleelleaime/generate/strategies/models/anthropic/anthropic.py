@@ -1,6 +1,5 @@
 from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
-from dotenv import load_dotenv
 from typing import Any, List
 
 import os
@@ -15,7 +14,6 @@ class AnthropicModels(PatchGenerationStrategy):
         self.temperature = kwargs.get("temperature", 0.0)
         self.n_samples = kwargs.get("n_samples", 1)
 
-        load_dotenv()
         self.client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     @backoff.on_exception(

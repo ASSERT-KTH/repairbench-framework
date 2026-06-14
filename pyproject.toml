@@ -1,13 +1,22 @@
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
-name = "elleelleaime"
+name = "repairbench-framework"
 version = "0.0.1"
 description = "Automatic Program Repair with Large Language Models"
 license = "MIT"
 authors = [
     "André Silva <andreans@kth.se>"
 ]
-repository = "https://github.com/ASSERT-KTH/elle-elle-aime"
-homepage = "https://github.com/ASSERT-KTH/elle-elle-aime"
+readme = "README.md"
+repository = "https://github.com/ASSERT-KTH/repairbench-framework"
+homepage = "https://github.com/ASSERT-KTH/repairbench-framework"
+packages = [
+    { include = "elleelleaime" }
+]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
@@ -19,18 +28,20 @@ tqdm = "^4.66.4"
 numpy = "^2.2.2"
 unidiff = "^0.7.5"
 backoff = "^2.2.1"
-black = "^24.4.2"
-torch = "^2.3.1"
-accelerate = "^0.34.0"
+black = "^25.0.0"
+torch = "^2.6.0"
+accelerate = "^1.4.0"
 sentencepiece = "^0.2.0"
-datasets = "^3.0.0"
-peft = "^0.11.1"
-bitsandbytes = "^0.43.1"
+datasets = "^3.3.2"
+bitsandbytes = "^0.45.3"
 evaluate = "^0.4.2"
-safetensors = "^0.4.3"
-google-generativeai = "^0.7.2"
-anthropic = "^0.34.2"
+safetensors = "^0.5.0"
+google-generativeai = "^0.8.0"
+anthropic = "^0.49.0"
 mistralai = "^1.2.3"
+pre-commit = "^4.1.0"
+litellm = "^1.67.0"
+peft = {git = "https://github.com/huggingface/peft"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"

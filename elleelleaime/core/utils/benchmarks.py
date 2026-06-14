@@ -4,6 +4,7 @@ from elleelleaime.core.benchmarks.humanevaljava.humanevaljava import HumanEvalJa
 from elleelleaime.core.benchmarks.quixbugs.quixbugs import QuixBugs
 from elleelleaime.core.benchmarks.gitbugjava.gitbugjava import GitBugJava
 from elleelleaime.core.benchmarks.BugsInPy.BugsInPy import BugsInPy
+from elleelleaime.core.benchmarks.runbugrun.runbugrun import RunBugRun
 
 from typing import Optional
 
@@ -13,6 +14,7 @@ benchmarks = {
     "QuixBugs": QuixBugs,
     "GitBugJava": GitBugJava,
     "BugsInPy": BugsInPy,
+    "RunBugRun": RunBugRun,
 }
 
 

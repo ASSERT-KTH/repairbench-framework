@@ -1,7 +1,6 @@
 import requests.exceptions
 from elleelleaime.generate.strategies.strategy import PatchGenerationStrategy
 
-from dotenv import load_dotenv
 from typing import Any, List
 
 import os
@@ -15,15 +14,14 @@ class OpenRouterModels(PatchGenerationStrategy):
         self.model_name = model_name
         self.temperature = kwargs.get("temperature", 0.0)
         self.n_samples = kwargs.get("n_samples", 1)
+        self.include_reasoning = kwargs.get("include_reasoning", True)
         self.provider = kwargs.get("provider", None)
         self.provider_args = {
-            "require_parameters": True,
             "allow_fallbacks": False,
         }
         if self.provider:
             self.provider_args["order"] = [self.provider]
 
-        load_dotenv()
         self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
 
     @backoff.on_exception(
@@ -47,7 +45,7 @@ class OpenRouterModels(PatchGenerationStrategy):
 
         response = response.json()
 
-        if "error" in response and response["error"]["code"] in {408, 429, 502}:
+        if "error" in response:
             raise Exception(response["error"])
 
         return response
@@ -62,6 +60,7 @@ class OpenRouterModels(PatchGenerationStrategy):
                     "model": self.model_name,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": self.temperature,
+                    "include_reasoning": self.include_reasoning,
                     "provider": self.provider_args,
                 }
                 kwargs = {k: v for k, v in kwargs.items() if v}

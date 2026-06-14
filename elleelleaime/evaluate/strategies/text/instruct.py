@@ -19,6 +19,9 @@ class InstructEvaluationStrategy(ReplaceEvaluationStrategy):
 
         :param message: The message to extract the generated code from.
         """
+        if message is None:
+            return None
+
         # Pattern to match code blocks with or without language specifier
         pattern = re.compile(r"```(\w*)\n([\s\S]*?)\n```")
 

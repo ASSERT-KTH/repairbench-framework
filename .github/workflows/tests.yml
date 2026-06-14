@@ -17,7 +17,7 @@ jobs:
 
       - name: Install poetry
         run: |
-          python -m pip install poetry==1.5
+          python -m pip install poetry==2.0.1
 
       - name: Configure poetry
         run: |
@@ -47,7 +47,17 @@ jobs:
       
       - name: Install Ubuntu packages
         run: |
-          sudo apt-get install -y dos2unix
+          sudo apt-get install -y dos2unix \
+                              git \
+                              build-essential \
+                              subversion \
+                              perl \
+                              curl \
+                              unzip \
+                              cpanminus \
+                              make \
+                              gosu \
+                              locales
 
       - name: Build and run tests
         run: CI=true && python -m poetry run python -m pytest -sxv tests/core/benchmarks/BugInPy/

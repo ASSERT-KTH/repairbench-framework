@@ -6,6 +6,7 @@ import logging
 import getpass, tempfile, difflib, shutil
 import subprocess
 import re
+import ast
 
 from elleelleaime.core.benchmarks.bug import Bug, RichBug
 
@@ -161,6 +162,19 @@ def get_modified_target_lines(diff: PatchSet) -> List[int]:
             len(context_lines) // 2 : len(context_lines) // 2 + 1
         ]
         return context_lines
+
+
+def extract_functions(source_code):
+    # Parse the source code into an AST
+    tree = ast.parse(source_code)
+
+    # Extract all function definitions
+    functions = [node for node in tree.body if isinstance(node, ast.FunctionDef)]
+
+    # Convert the function nodes back to source code
+    function_sources = [ast.get_source_segment(source_code, func) for func in functions]
+
+    return function_sources
 
 
 def extract_single_function(bug: Bug) -> Optional[Tuple[str, str]]:
@@ -516,7 +530,7 @@ def remove_python_comments(source: str) -> Optional[str]:
         return "".join(result)
     except Exception as e:
         logging.warning(
-            f"Failed to remove_python_comments from\n```\n{source}\n```\nwith error: {e}"
+            f"Failed to remove_python_comments with error: {e}"
         )
         return None
 

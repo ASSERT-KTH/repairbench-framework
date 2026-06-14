@@ -17,7 +17,7 @@ cd ../..
 ### GitBug-Java
 cd benchmarks/gitbug-java;
 chmod +x gitbug-java;
-poetry install --no-root;
+poetry install;
 # Skip setup if in CI
 if [ -z "$CI" ]; then
  poetry run ./gitbug-java setup;
@@ -32,3 +32,15 @@ docker rm -f bugsinpy-container 2>/dev/null || true
 docker run -d --name bugsinpy-container -it bugsinpy tail -f /dev/null
 # Initialize container
 docker exec bugsinpy-container bash -c "mkdir -p /bugsinpy/framework/bin/temp && chmod +x /bugsinpy/framework/bin/*"
+
+### RunBugRun
+cd benchmarks/run_bug_run;
+
+wget https://github.com/giganticode/run_bug_run_data/releases/download/v0.0.1/python_valid0.jsonl.gz;
+wget https://github.com/giganticode/run_bug_run_data/releases/download/v0.0.1/tests_all.jsonl.gz;
+ 
+gzip -d python_valid0.jsonl.gz;
+gzip -d tests_all.jsonl.gz;
+
+tar -xvzf buggy_test_results.tgz;
+cd ../..;
