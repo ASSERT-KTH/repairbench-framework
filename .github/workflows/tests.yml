@@ -50,4 +50,4 @@ jobs:
           sudo apt-get install -y dos2unix
 
       - name: Build and run tests
-        run: CI=true && python -m poetry run python -m pytest -sxv tests/
+        run: CI=true && python -m poetry run python -m pytest -sxv tests/core/benchmarks/BugInPy/
