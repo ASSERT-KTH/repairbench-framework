@@ -18,7 +18,6 @@ test_logger = logging.getLogger("BugsInPy.test")
 
 
 class TestBugsInPy:
-    # @pytest.mark.skip(reason="run other tests.")
     def test_get_benchmark(self):
         bugs_in_py = get_benchmark("BugsInPy")
         assert bugs_in_py is not None
@@ -29,7 +28,6 @@ class TestBugsInPy:
         assert len(set([bug.get_identifier() for bug in bugs])) == 500
         assert all(bug.get_ground_truth().strip() != "" for bug in bugs)
 
-    # @pytest.mark.skip(reason="run other tests.")
     def checkout_bug(self, bug: Bug) -> bool:
         bug_identifier = bug.get_identifier()
 
@@ -97,7 +95,6 @@ class TestBugsInPy:
                 check=False,  # Don't fail if directory doesn't exist
             )
 
-    # @pytest.mark.skip(reason="run other tests.")
     def test_checkout_bugs(self):
         bugs_in_py = get_benchmark("BugsInPy")
         assert bugs_in_py is not None
@@ -110,7 +107,7 @@ class TestBugsInPy:
         for bug in bugs:
             assert self.checkout_bug(bug), f"Failed checkout for {bug.get_identifier()}"
 
-    # @pytest.mark.skip(reason="This test is too slow to run on CI.")
+    @pytest.mark.skip(reason="This test is too slow to run on CI.")
     def test_checkout_all_bugs(self):
         bugs_in_py = get_benchmark("BugsInPy")
         assert bugs_in_py is not None
@@ -122,7 +119,6 @@ class TestBugsInPy:
         for bug in bugs:
             assert self.checkout_bug(bug), f"Failed checkout for {bug.get_identifier()}"
 
-    # @pytest.mark.skip(reason="run other tests.")
     def run_bug(self, bug: Bug) -> bool:
         project_name, _ = bug.get_identifier().rsplit("-", 1)
         bug_id = bug.get_identifier()
@@ -191,7 +187,6 @@ class TestBugsInPy:
                 check=False,  # Don't fail if directory doesn't exist
             )
 
-    # @pytest.mark.skip(reason="run other tests.")
     def test_run_bugs(self):
         bugs_in_py = get_benchmark("BugsInPy")
         assert bugs_in_py is not None
@@ -246,7 +241,6 @@ class TestBugsInPy:
         test_logger.info("=" * 80)
         test_logger.info("Test run completed.")
 
-    # @pytest.mark.skip(reason="run other tests.")
     def test_get_failing_tests(self):
         bugs_in_py = get_benchmark("BugsInPy")
         assert bugs_in_py is not None
@@ -263,7 +257,6 @@ class TestBugsInPy:
                 assert isinstance(test_name, str) and test_name.strip() != ""
                 assert isinstance(error_msg, str) and error_msg.strip() != ""
 
-    # @pytest.mark.skip(reason="run other tests.")
     def test_get_src_test_dir(self):
         bugs_in_py = get_benchmark("BugsInPy")
         assert bugs_in_py is not None
@@ -295,7 +288,6 @@ class TestBugsInPy:
                     check=False,
                 )
 
-    # @pytest.mark.skip(reason="run other tests.")
     def test_run_single_bug(self):
         """Test a single bug to see detailed output"""
         bugs_in_py = get_benchmark("BugsInPy")
