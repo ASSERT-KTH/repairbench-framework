@@ -1,16 +1,9 @@
 from abc import ABC, abstractmethod
-
-
-# prevent circular import
-# Benchmark imports Bug -> Bug imports Benchmark -> Benchmark imports Bug -> ...
-class Benchmark(ABC):
-    pass
-
-
 import pathlib
+from typing import Dict, List, Optional, TYPE_CHECKING
 
-from typing import Dict, List, Optional
-from elleelleaime.core.benchmarks.bug import Bug
+if TYPE_CHECKING:
+    from elleelleaime.core.benchmarks.bug import Bug
 
 
 class Benchmark(ABC):
@@ -21,7 +14,7 @@ class Benchmark(ABC):
     def __init__(self, identifier: str, path: pathlib.Path) -> None:
         self.identifier: str = identifier
         self.path: pathlib.Path = path.absolute()
-        self.bugs: Dict[str, Bug] = dict()
+        self.bugs: Dict[str, "Bug"] = dict()
 
     def get_identifier(self) -> str:
         return self.identifier
@@ -32,13 +25,13 @@ class Benchmark(ABC):
     def get_bin(self, options: str = "") -> Optional[str]:
         return None
 
-    def get_bugs(self) -> List[Bug]:
+    def get_bugs(self) -> List["Bug"]:
         return sorted(list(self.bugs.values()))
 
-    def get_bug(self, identifier) -> Optional[Bug]:
+    def get_bug(self, identifier) -> Optional["Bug"]:
         return self.bugs[identifier]
 
-    def add_bug(self, bug: Bug) -> None:
+    def add_bug(self, bug: "Bug") -> None:
         assert bug.get_identifier() not in self.bugs
         self.bugs[bug.get_identifier()] = bug
 

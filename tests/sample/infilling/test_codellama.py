@@ -40,23 +40,100 @@ class TestInfillingCodellama:
         - non single-function, non single-file (Chart-18)
     """
 
+    MODEL_NAME: str = "codellama"
+    PROMPT_STRATEGY: str = "infilling"
+
+    # Java benchmarks
+    JAVA: str = "java"
     DEFECTS4J: Benchmark
     HUMANEVALJAVA: Benchmark
     GITBUGJAVA: Benchmark
-    PROMPT_STRATEGY: str = "infilling"
-    MODEL_NAME: str = "codellama"
+
+    # Python benchmark
+    PYTHON: str = "python"
+    BUGSINPY: Benchmark
 
     @classmethod
     def setup_class(cls):
         TestInfillingCodellama.DEFECTS4J = get_benchmark("defects4j")
         assert TestInfillingCodellama.DEFECTS4J is not None
         TestInfillingCodellama.DEFECTS4J.initialize()
+
         TestInfillingCodellama.HUMANEVALJAVA = get_benchmark("humanevaljava")
         assert TestInfillingCodellama.HUMANEVALJAVA is not None
         TestInfillingCodellama.HUMANEVALJAVA.initialize()
+
         TestInfillingCodellama.GITBUGJAVA = get_benchmark("gitbugjava")
         assert TestInfillingCodellama.GITBUGJAVA is not None
         TestInfillingCodellama.GITBUGJAVA.initialize()
+
+        TestInfillingCodellama.BUGSINPY = get_benchmark("BugsInPy")
+        assert TestInfillingCodellama.BUGSINPY is not None
+        TestInfillingCodellama.BUGSINPY.initialize()
+
+    def test_youtube_dl_1(self):
+        bug = TestInfillingCodellama.BUGSINPY.get_bug("youtube-dl-1")
+        assert bug is not None
+
+        sample = generate_sample(
+            bug=bug,
+            prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.PYTHON,
+            model_name=TestInfillingCodellama.MODEL_NAME,
+        )
+
+        # Assert we are dealing with the correct bug and strategy
+        assert sample["identifier"] == "youtube-dl-1"
+        assert sample["prompt_strategy"] == "infilling"
+
+        # Assert that the buggy code is properly constructed
+        assert "'': lambda v: v is not None," in sample["buggy_code"]
+        assert "'!': lambda v: v is None," in sample["buggy_code"]
+
+        # Assert that the fixed code is properly constructed
+        assert (
+            "'': lambda v: (v is True) if isinstance(v, bool) else (v is not None),"
+            in sample["fixed_code"]
+        )
+        assert (
+            "'!': lambda v: (v is False) if isinstance(v, bool) else (v is None),"
+            in sample["fixed_code"]
+        )
+
+        # Assert that the prompt is properly constructed
+        assert sample["prompt"].count("<FILL_ME>") == 1
+
+    def test_pysnooper_3(self):
+        bug = TestInfillingCodellama.BUGSINPY.get_bug("PySnooper-3")
+        assert bug is not None
+
+        sample = generate_sample(
+            bug=bug,
+            prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.PYTHON,
+            model_name=TestInfillingCodellama.MODEL_NAME,
+        )
+
+        # Assert we are dealing with the correct bug and strategy
+        assert sample["identifier"] == "PySnooper-3"
+        assert sample["prompt_strategy"] == "infilling"
+
+        # Assert that the buggy code and fixed code are properly extracted
+        assert sample["buggy_code"] is not None
+        assert sample["fixed_code"] is not None
+        assert sample["prompt"] is not None
+
+        # Assert that the buggy code contains the incorrect variable name
+        assert "output_path" in sample["buggy_code"]
+        assert "with open(output_path, 'a') as output_file:" in sample["buggy_code"]
+
+        # Assert that the fixed code contains the correct variable name
+        assert "output" in sample["fixed_code"]
+        assert "with open(output, 'a') as output_file:" in sample["fixed_code"]
+        assert "output_path" not in sample["fixed_code"]
+
+        # Assert that the prompt is properly constructed
+        assert sample["prompt"].count("<FILL_ME>") == 1
 
     def test_closure_46(self):
         bug = TestInfillingCodellama.DEFECTS4J.get_bug("Closure-46")
@@ -65,6 +142,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -86,6 +164,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -122,6 +201,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -152,6 +232,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -186,6 +267,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -203,6 +285,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -220,6 +303,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -237,6 +321,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -265,6 +350,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
             keep_comments=False,
@@ -321,6 +407,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
             keep_comments=False,
@@ -374,6 +461,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
             keep_comments=False,
@@ -415,6 +503,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
             keep_comments=False,
@@ -463,6 +552,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -491,6 +581,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -521,6 +612,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -549,6 +641,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -583,6 +676,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -612,6 +706,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -636,6 +731,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -654,6 +750,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
         )
@@ -677,6 +774,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
         )
 
@@ -695,6 +793,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
         )
@@ -719,6 +818,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
         )
@@ -746,6 +846,7 @@ class TestInfillingCodellama:
         sample = generate_sample(
             bug=bug,
             prompt_strategy=TestInfillingCodellama.PROMPT_STRATEGY,
+            language=TestInfillingCodellama.JAVA,
             model_name=TestInfillingCodellama.MODEL_NAME,
             keep_buggy_code=True,
         )

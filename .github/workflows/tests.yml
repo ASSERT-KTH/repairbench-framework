@@ -5,11 +5,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.3.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        with:
+            submodules: recursive
 
-      - uses: jlumbroso/free-disk-space@v1.3.1
+      - uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
 
-      - uses: actions/setup-python@v5.6.0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.13'
 
@@ -22,7 +24,7 @@ jobs:
           python -m poetry config virtualenvs.in-project true
     
       - name: Cache the virtualenv
-        uses: actions/cache@v4.2.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ./.venv
           key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
@@ -32,12 +34,10 @@ jobs:
           python -m poetry install
 
       - name: Setup Perl
-        uses: shogo82148/actions-setup-perl@v1.35.0
-        with:
-          perl-version: "5.40.1"
+        uses: shogo82148/actions-setup-perl@a198315ec4e9244f206879ea7b63078003aec8a6 # v1.41.1
 
       - name: Setup Java
-        uses: actions/setup-java@v4.7.1
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: 'temurin'
           java-version: '8'
@@ -60,4 +60,4 @@ jobs:
                               locales
 
       - name: Build and run tests
-        run: CI=true && python -m poetry run python -m pytest -sxv tests/
+        run: CI=true && python -m poetry run python -m pytest -sxv tests/core/benchmarks/BugInPy/

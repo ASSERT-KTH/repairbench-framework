@@ -30,7 +30,6 @@ def compute_diff(
     )
 
 
-# Check if the computed diff is equivalent to the original diff
 def assert_same_diff(
     original_diff: PatchSet, function_diff: List[str], original_inverted: bool = False
 ) -> bool:
@@ -146,7 +145,7 @@ def extract_single_function(bug: Bug) -> Optional[Tuple[str, str]]:
     Returns None is bug is not single-function
 
     Args:
-        bug (Bug): THe bug to extract the code from
+        bug (Bug): The bug to extract the code from
 
     Returns:
         Optional[Tuple[str, str]]: None if the bug is not single-function, otherwise a tuple of the form (buggy_code, fixed_code)

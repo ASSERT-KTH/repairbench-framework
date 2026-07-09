@@ -6,6 +6,86 @@ import pytest
 import os
 
 
+class TestInstructPromptingBugsInPy:
+    BUGSINPY: Benchmark
+    PROMPT_STRATEGY: str = "instruct_python"
+
+    @classmethod
+    def setup_class(cls):
+        TestInstructPromptingBugsInPy.BUGSINPY = get_benchmark("BugsInPy")
+        assert TestInstructPromptingBugsInPy.BUGSINPY is not None
+        TestInstructPromptingBugsInPy.BUGSINPY.initialize()
+
+    def test_youtube_dl_1(cls):
+        bug = TestInstructPromptingBugsInPy.BUGSINPY.get_bug("youtube-dl-1")
+        assert bug is not None
+
+        sample = generate_sample(
+            bug=bug,
+            prompt_strategy=TestInstructPromptingBugsInPy.PROMPT_STRATEGY,
+        )
+
+        # Assert we are dealing with the correct bug and strategy
+        assert sample["identifier"] == "youtube-dl-1"
+        assert sample["prompt_strategy"] == "instruct_python"
+
+        # Assert that the buggy code and fixed code are properly extracted
+        assert sample["buggy_code"] is not None
+        assert sample["fixed_code"] is not None
+        assert sample["prompt"] is not None
+
+        # Assert that the buggy code contains the original lambda functions
+        assert "lambda v: v is not None" in sample["buggy_code"]
+        assert "lambda v: v is None" in sample["buggy_code"]
+
+        # Assert that the fixed code contains the corrected lambda functions
+        assert (
+            "lambda v: (v is True) if isinstance(v, bool) else (v is not None)"
+            in sample["fixed_code"]
+        )
+        assert (
+            "lambda v: (v is False) if isinstance(v, bool) else (v is None)"
+            in sample["fixed_code"]
+        )
+
+        # Assert that the prompt is properly constructed
+        assert "You are an automatic program repair tool" in sample["prompt"]
+        assert "buggy function" in sample["prompt"]
+        assert "```python" in sample["prompt"]
+
+    def test_pysnooper_3(cls):
+        bug = TestInstructPromptingBugsInPy.BUGSINPY.get_bug("PySnooper-3")
+        assert bug is not None
+
+        sample = generate_sample(
+            bug=bug,
+            prompt_strategy=TestInstructPromptingBugsInPy.PROMPT_STRATEGY,
+        )
+
+        # Assert we are dealing with the correct bug and strategy
+        assert sample["identifier"] == "PySnooper-3"
+        assert sample["prompt_strategy"] == "instruct_python"
+
+        # Assert that the buggy code and fixed code are properly extracted
+        assert sample["buggy_code"] is not None
+        assert sample["fixed_code"] is not None
+        assert sample["prompt"] is not None
+
+        # Assert that the buggy code contains the incorrect variable name
+        assert "output_path" in sample["buggy_code"]
+        assert "with open(output_path, 'a') as output_file:" in sample["buggy_code"]
+
+        # Assert that the fixed code contains the correct variable name
+        assert "output" in sample["fixed_code"]
+        assert "with open(output, 'a') as output_file:" in sample["fixed_code"]
+        assert "output_path" not in sample["fixed_code"]
+
+        # Assert that the prompt is properly constructed
+        assert "You are an automatic program repair tool" in sample["prompt"]
+        assert "buggy function" in sample["prompt"]
+        assert "```python" in sample["prompt"]
+
+
 class TestInstructPromptingDefects4J:
     DEFECTS4J: Benchmark
     PROMPT_STRATEGY: str = "instruct"

@@ -12,7 +12,7 @@ docker pull maven:3.9.8-eclipse-temurin-8;
 cd benchmarks/defects4j;
 cpanm --installdeps .;
 ./init.sh;
-cd ../..;
+cd ../..
 
 ### GitBug-Java
 cd benchmarks/gitbug-java;
@@ -22,7 +22,16 @@ poetry install;
 if [ -z "$CI" ]; then
  poetry run ./gitbug-java setup;
 fi
-cd ../..;
+cd ../..
+
+### BugsInPy
+docker build -t bugsinpy -f Dockerfile.bugsinpy .
+# Cleanup old container if it exists
+docker rm -f bugsinpy-container 2>/dev/null || true
+# Start the container and keep it running
+docker run -d --name bugsinpy-container -it bugsinpy tail -f /dev/null
+# Initialize container
+docker exec bugsinpy-container bash -c "mkdir -p /bugsinpy/framework/bin/temp && chmod +x /bugsinpy/framework/bin/*"
 
 ### RunBugRun
 cd benchmarks/run_bug_run;

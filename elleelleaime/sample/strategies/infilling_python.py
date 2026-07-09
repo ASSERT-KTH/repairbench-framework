@@ -4,13 +4,15 @@ import re
 
 from elleelleaime.sample.strategy import PromptingStrategy
 from elleelleaime.core.benchmarks.bug import Bug
+from elleelleaime.core.utils.python.python import (
+    extract_single_function,
+    compute_diff,
+    remove_python_comments,
+    remove_empty_lines,
+)
 
-from elleelleaime.core.utils.language_utils import LanguageUtils
-from elleelleaime.core.utils.languages.python_utils import PythonUtils
-from elleelleaime.core.utils.languages.java_utils import JavaUtils
 
-
-class InfillingPrompting(PromptingStrategy):
+class InfillingPromptingPython(PromptingStrategy):
 
     # MODEL_DICT is a dictionary of model names and their corresponding kwargs
     MODEL_DICT = {
@@ -20,17 +22,10 @@ class InfillingPrompting(PromptingStrategy):
             "single_chunk": True,
         },
         # Add the model you want to use here
-        "deepseek": {
-            "mask_token": "<｜fim▁hole｜>",
-            "extra_mask_token": False,
-            "single_chunk": True,
-            "begin_fim": "<｜fim▁begin｜>",
-            "end_fim": "<｜fim▁end｜>",
-        },
     }
 
     def __init__(self, **kwargs):
-        super().__init__("infilling")
+        super().__init__("infilling_python")
 
         self.model_name: str = kwargs.get("model_name", "").strip().lower()
         assert (
@@ -38,15 +33,9 @@ class InfillingPrompting(PromptingStrategy):
         ), f"Unknown model name: {kwargs.get('model_name', None)}"
         model_kwargs = self.MODEL_DICT.get(self.model_name, {})
         self.original_mask_token: str = model_kwargs["mask_token"]
-        self.begin_fim: str = model_kwargs.get("begin_fim", None)
-        self.end_fim: str = model_kwargs.get("end_fim", None)
         self.extra_mask_token: bool = model_kwargs.get("extra_mask_token", False)
-        self.single_chunk: bool = model_kwargs.get("single_chunk", True)
         self.keep_buggy_code: bool = kwargs.get("keep_buggy_code", False)
         self.keep_comments: bool = kwargs.get("keep_comments", True)
-
-        language: str = kwargs.get("language", "").strip().lower()
-        self.language_utils = LanguageUtils.get_language_utils(language)
 
     def generate_masking_prompt(self, line_to_replace: str, mask_id: int) -> str:
         """Generate the mask token to be inserted, according to the mask idx."""
@@ -68,7 +57,7 @@ class InfillingPrompting(PromptingStrategy):
         return leading_spaces + mask_token
 
     def build_multi_cloze_prompt(self, buggy_code: str, fixed_code: str) -> str:
-        fdiff = self.language_utils.compute_diff(buggy_code, fixed_code)
+        fdiff = compute_diff(buggy_code, fixed_code)
 
         # Iterate over both the buggy and fixed code to generate the prompt
         prompt = ""
@@ -113,7 +102,7 @@ class InfillingPrompting(PromptingStrategy):
         return prompt
 
     def build_single_cloze_prompt(self, buggy_code: str, fixed_code: str) -> str:
-        fdiff = self.language_utils.compute_diff(buggy_code, fixed_code)
+        fdiff = compute_diff(buggy_code, fixed_code)
 
         # Iterate over the diff to get the prefix, middle, and suffix parts
         prefix = [True, ""]
@@ -162,7 +151,7 @@ class InfillingPrompting(PromptingStrategy):
         Returns:
             Tuple: A tuple of the form (buggy_code, fixed_code, prompt).
         """
-        result = self.language_utils.extract_single_function(bug)
+        result = extract_single_function(bug)
 
         if result is None:
             return None, None, None
@@ -170,26 +159,21 @@ class InfillingPrompting(PromptingStrategy):
         buggy_code, fixed_code = result
 
         if not self.keep_comments:
-            buggy_code_prompt = self.language_utils.remove_java_comments(buggy_code)
-            fixed_code_prompt = self.language_utils.remove_java_comments(fixed_code)
+            buggy_code_prompt = remove_python_comments(buggy_code)
+            fixed_code_prompt = remove_python_comments(fixed_code)
         else:
             buggy_code_prompt = buggy_code
             fixed_code_prompt = fixed_code
 
-        buggy_code_prompt = self.language_utils.remove_empty_lines(buggy_code_prompt)
-        fixed_code_prompt = self.language_utils.remove_empty_lines(fixed_code_prompt)
+        buggy_code_prompt = remove_empty_lines(buggy_code_prompt)
+        fixed_code_prompt = remove_empty_lines(fixed_code_prompt)
 
-        if self.single_chunk:
+        if self.MODEL_DICT[self.model_name]["single_chunk"]:
             prompt = self.build_single_cloze_prompt(
                 buggy_code_prompt, fixed_code_prompt
             )
         else:
             prompt = self.build_multi_cloze_prompt(buggy_code_prompt, fixed_code_prompt)
-
-        if self.begin_fim:
-            prompt = f"{self.begin_fim}{prompt}"
-        if self.end_fim:
-            prompt = f"{prompt}{self.end_fim}"
 
         return buggy_code, fixed_code, prompt
 

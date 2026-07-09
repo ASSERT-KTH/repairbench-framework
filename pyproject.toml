@@ -22,8 +22,8 @@ package-mode = false
 python = ">=3.10,<4.0"
 openai = "^1.35.1"
 python-dotenv = "^1.0.1"
-transformers = {extras = ["torch"], version = "^4.49.0"}
-fire = "^0.7.0"
+transformers = {extras = ["torch"], version = "^4.33.0"}
+fire = "^0.7.1"
 tqdm = "^4.66.4"
 numpy = "^2.2.2"
 unidiff = "^0.7.5"
