@@ -529,9 +529,7 @@ def remove_python_comments(source: str) -> Optional[str]:
 
         return "".join(result)
     except Exception as e:
-        logging.warning(
-            f"Failed to remove_python_comments with error: {e}"
-        )
+        logging.warning(f"Failed to remove_python_comments with error: {e}")
         return None
 
 
