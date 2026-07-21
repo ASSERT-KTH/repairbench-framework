@@ -44,5 +44,5 @@ litellm = "^1.67.0"
 peft = {git = "https://github.com/huggingface/peft"}
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.0.0"
+pytest = "^9.0.0"
 mypy = "^1.2.0"
